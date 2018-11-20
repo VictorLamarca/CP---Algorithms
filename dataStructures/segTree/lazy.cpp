@@ -49,6 +49,7 @@ int v[N];
 
 int n;
 
+//ii eh o id do no que diz respeito ao intervalo [il,ir) de v, 0-indexed, seg de soma
 void build(int il = 0, int ir = n, int ii = 0){
 	if(il+1==ir){
 		seg[ii] = v[il];
@@ -88,6 +89,7 @@ void upr(int ii, int il, int ir, int ul, int ur, int x){
 	return;
 }
 
+//
 int getsum(int ii, int il, int ir, int ql, int qr){
 	seg[ii] += (ir-il)*lazy[ii];
 	if(il+1!=ir){
