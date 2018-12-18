@@ -39,8 +39,15 @@ bool debug = 1;
 
 const int N = 1e5+10;
 
-//funciona para toda funcao iterativa, soma, min, max, xor, etc
-ll seg[2*N];
+/*  LEMBRAR
+    Por capacidade como 2*N
+    Em build faco atual = filhos (ponho vetor em [n,2*n-1] e faco de n-1 até 1
+    Em Update mudo folha e faco pai = atual (while pos>1, ou seja tem pai)
+    Em query passo por td (l+=n, r+=n) ate l<r
+*/
+
+//funciona para toda funcao comutativa iterativa, soma, min, max, xor, etc
+ll seg[2*N]; //indices de [1,2*n-1], folhas (array) de [n,2*n-1]
 ll n, nq;
 
 void build(){

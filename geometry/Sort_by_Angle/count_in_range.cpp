@@ -12,8 +12,7 @@ original problem: https://www.urionlinejudge.com.br/judge/pt/problems/view/2907
 solved using sort by angle technique
 */
 
-class pt{
-public:
+struct pt{
     ll x, y;
     pt(){}
     pt( ll xx, ll yy){
