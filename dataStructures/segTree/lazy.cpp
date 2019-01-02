@@ -1,156 +1,78 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define FILE_IN freopen("kotlin.in", "r", stdin);
-#define FILE_OUT freopen("kotlin.out", "w", stdout);
+/* 
+    nao esquecer de 4*N no tamanho da seg e do lazy
+    e de dar build 
+    
+    build e pass tem 3 paramtros
+    updlazy tem 4
+    e operacoes normais (usadas de fora) tem 5 parametros 
+    upd e query
+    
+    Em upd e query, td vez que passo dos caso base, preciso passar o pass do no (talvez nao tenha, mas precisaria checar), pois se a operacao atual vai lidar com nos mais debaixo preciso telos atualizados
+    
+    Nós da seg q são de um único elemento nunca passam dos casos base, pois ou está inteiramente dentro ou fora do intervalo. E esses nós (q são folhas) podem até estar com lazy ativo, mas nao significa nada porque elas nao tem filhos mesmo
+    
+    v[id] nao estara atualizado, para recuperalo preciso passar o s[no] que é de id na vdd.
+*/
 
-#define fr(i,n) for(int i=0;i<n;i++)
-#define frr(i,a,b) for(int i =a;i<=b;i++)
-// for(auto it : g[i].nb)
+ll seg[4*N];
 
-typedef long long ll;
-typedef long double ld;
+//lazy nao precisa ter valor da soma total a ser passada, apenas o x que será multiplicado
+ll lazy[4*N];
 
-#define pb push_back
-
-#define all(a) a.begin(),a.end() 
-
-#define fi first
-#define se second
-typedef pair<int,int> pii;
-typedef pair<ll,ll> pll;
-typedef tuple<ll,ll,ll> t3ll;
-
-#define mt make_tuple
-#define get(a,id) get<id>(a)
-
-const long double PI = acos(-1.0l);
-const ll MOD = 1e9+7;
-
-//LONG_LONG_MAX
-//-DBL_MAX
-
-bool debug = 1;
-#define printa(a) cout << #a << " = " << (a) << endl
-#define prin(a) if(debug) cout << #a << " = " << (a) << endl
-#define soprin(a) if(debug) cout << (a)
-#define ppal(a)  if(debug) cout << #a << endl
-#define prinsep if(debug) cout << "------" << endl
-#define cendl if(debug) cout << endl
-#define prinpar(p) if(debug) cout << #p << ".fi=" << (p).fi << " " << #p << ".se=" << (p).se << endl
-#define print(tup) if(debug) cout << #tup << " = {" << get(tup,0) << ", " << get(tup,1) << ", " << get(tup,2) << "}\n"
-#define prinv(v) if(debug){ cout << #v << ":" << endl; for(auto it = (v).begin(); it!=(v).end();it++){ cout << *it << " ";} cout << endl;}
-
-const int N = 1e5+10;
-
-int seg[4*N];
-int lazy[4*N];
-int v[N];
+ll v[N];
 
 int n;
 
-//ii eh o id do no que diz respeito ao intervalo [il,ir) de v, 0-indexed, seg de soma
-void build(int il = 0, int ir = n, int ii = 0){
-	if(il+1==ir){
-		seg[ii] = v[il];
-		return;
-	}
-	
-	int mid = (il+ir)/2;
-	build(il,mid,2*ii+1);
-	build(mid,ir,2*ii+2);
-	
-	seg[ii] = seg[2*ii+1] + seg[2*ii+2];
+void build(int no = 1, int l = 0, int r = n){
+    if(r-l==1){
+        seg[no] = v[l];
+        return;
+    }
+    int mid = (l+r)/2;
+    build(2*no,l,mid);
+    build(2*no+1,mid,r);
+    s[no] = s[2*no]+s[2*no+1];
 }
 
-void upr(int ii, int il, int ir, int ul, int ur, int x){
-	seg[ii] += (ir-il)*lazy[ii];
-	if(il+1!=ir){
-		lazy[2*ii+1]+=lazy[ii];
-		lazy[2*ii+2]+=lazy[ii];
-		lazy[ii] = 0;
-	}
-	
-	if(il>=ur or ul>=ir) return;
-	
-	if(il>=ul and ir<=ur){
-		seg[ii]+=x*(ir-il);
-		if(il+1!=ir){
-			lazy[2*ii+1]+=x;
-			lazy[2*ii+2]+=x;
-		}
-		return;
-	}
-	int mid = (ir+il)/2;
-	upr(2*ii+1,il,mid,ul,ur,x);
-	upr(2*ii+2,mid,ir,ul,ur,x);
-	
-	seg[ii] = seg[2*ii+1]+seg[2*ii+2];
-	return;
+void updlazy(int no, int l, int r, ll x){
+    s[no] += (r-l)*x;
+    lazy[no] += x;
 }
 
-//
-int getsum(int ii, int il, int ir, int ql, int qr){
-	seg[ii] += (ir-il)*lazy[ii];
-	if(il+1!=ir){
-		lazy[2*ii+1]+=lazy[ii];
-		lazy[2*ii+2]+=lazy[ii];
-		lazy[ii] = 0;
-	}
-	
-	if(il>=qr or ql>=ir) return 0;
-	
-	if(il>=ql and ir<=qr) return seg[ii];
-	
-	int mid = (ir+il)/2;
-	
-	return getsum(2*ii+1,il,mid,ql,qr) + getsum(2*ii+2,mid,ir,ql,qr);
-}	
+void pass(int no, int l, int r){
+    int mid = (l+r)/2;
+    updlazy(2*no,l,mid,lazy[no]);
+    updlazy(2*no+1,mid,r,lazy[no]);
+    lazy[no] = 0;
+}
 
-/*
-input exemplo - adaptacao da seg desenhada no ggeks:
-https://www.geeksforgeeks.org/lazy-propagation-in-segment-tree/
-6
-1 3 5 7 9 11
-9
-q 1 6
-q 1 3
-q 4 6
-u 1 6 1
-q 1 6
-u 1 3 -2
-q 1 6
-q 1 3
-q 4 6
-*/
+void upd(ll x, int lup, int rup, int no = 1, int l = 0, int r = n){
+    if(rup<=l or lup>=r) return;
+    if(lup<=l and rup>=r){ //intervalo q o NÓ representa completamente inteiro
+        updlazy(no,l,r,x);
+        return;
+    }   
+    pass(no,l,r);
+    int mid = (l+r)/2;
+    upd(x,lup,rup,2*no,l,mid);
+    upd(x,lup,rup,2*no+1,mid,r);
+    s[id] = s[2*id] + s[2*id+1]; //cuidado com essa operacao, pois os filhos podem nao ter mudado por completo, as vezes é diferente da operação do updlazy
+}
+
+ll query(int lq, int rq, int no = 1, int l = 0, int r = n){
+    if(rq<=l or lq>=r) return;
+    if(lq<=l and rq>=r){
+        return s[no];
+    } 
+    pass(no,l,r);
+    int mid = (l+r)/2;
+    return query(lq,rq,2*no,l,mid) + query(lq,rq,2*no+1,mid,r);
+}
 
 int main(){
-	//FILE_IN FILE_OUT
-	cin >> n;
-	fr(i,n) scanf("%d",v+i);
-	
-	build();
-	
-	int q;
-	cin >> q;
-	fr(i,q){
-		char c;
-		scanf(" %c", &c);
-		if(c=='q'){
-			int l, r;
-			scanf("%d%d", &l, &r);
-			cout << "opt, l, r = " << c << " " << l << " " << r << endl;
-			l--,r--;
-			prin(getsum(0,0,n,l,r+1));
-		} else{
-			int x, l, r;
-			scanf("%d%d%d", &l, &r, &x);
-			cout << "opt, l, r, x = " << c << " " << l << " " << r << " " << x << endl;
-			l--,r--;
-			upr(0,0,n,l,r+1,x);
-		}
-		cendl;
-	}
 	
 	return 0;
 }
