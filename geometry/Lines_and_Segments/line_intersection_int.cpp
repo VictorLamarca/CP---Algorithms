@@ -58,16 +58,19 @@ of a intersection (if any), that is for examle x=3/4 and y=-1/1
 Watch out for overflow, |x|,|y|<=5e5
 */
 int line_intersection(pt p1, pt p2, pt p3, pt p4, pair<pll,pll> &pintersection){
-    if(p1==p2 or p3==p4){
-        return 0;
-        //assert(0); //?
+    if(p1==p2 or p3==p4) return 0; //assert(0); //?
+    
+    ll a1, a2, b1, b2, c1, c2;
+    
+    fr(cor,2){
+        a1 = p1.y-p2.y, b1 = p2.x-p1.x;
+	    c1 = p1.x*a1 + p1.y*b1;
+	    swap(p1,p3);
+	    swap(p2,p4);
+	    swap(a1,a2);
+	    swap(b1,b2);
+	    swap(c1,c2);
     }
-
-	ll a1 = p1.y-p2.y, b1 = p2.x-p1.x;
-	ll c1 = p1.x*a1 + p1.y*b1;
-	
-	ll a2 = p3.y-p4.y, b2 = p4.x-p3.x;
-	ll c2 = p3.x*a2 + p3.y*b2;
 	
 	ll det = a1*b2-a2*b1;
 	
