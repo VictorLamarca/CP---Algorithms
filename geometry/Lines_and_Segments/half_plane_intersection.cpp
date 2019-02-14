@@ -9,6 +9,12 @@ typedef long long ll;
 #define eb emplace_back
 #define all(v) (v).begin(),(v).end()
 
+/*
+    Half plane intersection implementado com precisao inteira
+    cuidado overflow
+    coordenadas tais que 16*x^4<=1e18 (x<=1e4)
+*/
+
 struct pt{
     ll x, y;
     pt(){}
@@ -219,33 +225,24 @@ int hp(vector<seg> v){
     list<seg> l(all(v));
     assert(l.size()>=3);
     
-    fr(cor,2) for(auto it = l.begin();it!=l.end();it++){
-        while(1){
-            auto it1 = prox(it,l);
+    fr(tt,2) for(auto it = l.begin();it!=l.end();it++){
+        fr(cor,2) while(1){
+            auto it1 = it;
             auto it2 = prox(it1,l);
-            if((it->v^it2->v) <= 0){
-                if(tira(*it1,oposto(*it),*it2)) return 0;
+            auto it3 = prox(it2,l);
+            if(cor){
+                it3 = it;
+                it2 = prev(it3,l);
+                it1 = prev(it2,l);
+            }
+            if((it1->v^it3->v) <= 0){
+                if(!cor and tira(*it2,oposto(*it1),*it3)) return 0;
+                else if(cor and tira(*it1,oposto(*it3),*it2)) return 0;
                 else break;
             } else{
-                if(tira(*it,*it1,*it2)){ 
-                    l.erase(it1);
-                }
+                if(tira(*it1,*it2,*it3)) l.erase(it2);
                 else break;
-            }    
-        }
-        
-        while(1){
-            auto it1 = prev(it,l);
-            auto it2 = prev(it1,l);
-            if((it2->v^it->v) <= 0){
-                if(tira(*it2,oposto(*it),*it1)) return 0;
-                else break;
-            } else{
-                if(tira(*it2,*it1,*it)){ 
-                    l.erase(it1);
-                }
-                else break;
-            }    
+            }   
         }
     }
     
@@ -256,7 +253,7 @@ int hp(vector<seg> v){
     return 1;
 }   
 
-//solvesd https://atcoder.jp/contests/jag2018summer-day3/tasks/jag2018summer_day3_e
+//solves https://atcoder.jp/contests/jag2018summer-day3/tasks/jag2018summer_day3_e
 
 int main(){
     vector<seg> v;
