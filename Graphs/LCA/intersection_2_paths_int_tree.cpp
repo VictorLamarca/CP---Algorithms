@@ -6,7 +6,6 @@ using namespace std;
 #define eb emplace_back
 #define all(v) (v).begin(),(v).end()
 
-
 //LEMBRAR DE POR O MAKE DEPOIS DE MONTAR A ARVORE
 const int N = 1e5+10;
 const int MLOG = 17;
@@ -73,11 +72,11 @@ int lca(int p, int q){
 
 /*
     Solves problem:
-    https://codeforces.com/contest/832/problem/D
+    https://www.urionlinejudge.com.br/judge/pt/problems/view/2887
 */
 
 int no_to_id[N];
-int vlca[3][3];
+int vlca[4][4];
 
 int flca(int u, int v){
     u = no_to_id[u];
@@ -105,40 +104,24 @@ int main(){
     int n, q;
     cin >> n >> q;
     
-    frr(i,1,n-1){
-        int u;
-        scanf("%d", &u);
-        u--;
-        g[i].eb(u);
-        g[u].eb(i);
+    fr(i,n-1){
+        int u, v;
+        scanf("%d%d", &u, &v);;
+        u--,v--;
+        g[u].eb(v);
+        g[v].eb(u);
     }
     
     make(n);
     
     fr(qq,q){
-        vector<int> vq;
-        fr(i,3){
-            int x;
-            scanf("%d", &x);
-            x--;
-            vq.eb(x);
+        vector<int> v(4);
+        fr(i,4) scanf("%d", &v[i]), v[i]--;
+        fr(i,4) no_to_id[v[i]] = i;
+        fr(i,4) fr(j,i){
+            vlca[i][j] = vlca[j][i] = lca(v[i],v[j]);
         }
-        
-        sort(all(vq));
-        fr(i,3) no_to_id[vq[i]] = i;
-        
-        int ans = 0;
-        
-        fr(i,3) fr(j,i){
-            vlca[i][j] = vlca[j][i] = lca(vq[i],vq[j]);
-        }
-        fr(i,3) vlca[i][i] = vq[i];
-        
-        fr(i,3) ans = max(ans,is(vq[i],vq[(i+1)%3],vq[i],vq[(i+2)%3]));
-        
-        printf("%d\n", ans);
+        fr(i,4) vlca[i][i] = v[i];
+        printf("%d\n", is(v[0],v[1],v[2],v[3]));
     }
-	
-	return 0;
 }
-
