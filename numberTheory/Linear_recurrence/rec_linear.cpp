@@ -9,13 +9,16 @@ const ll MOD = 1e9+7;
 
 //solves https://codeforces.com/contest/1117/problem/D
 
-//multipllica matriz - VALORES EM MÓDULO
+/*
+    multipllica matriz - VALORES EM MÓDULO
+    para matriz n x n complexidade n^3
+*/
 vector<vector<ll>> mm(vector<vector<ll>> a, vector<vector<ll>> b){
-	vector<vector<ll>> ans(a.size(),vector<ll>(b[0].size()));
-	
-	int l = a.size();
+
+    int l = a.size();
 	int c = b[0].size();
-	int tam = a[0].size();
+	
+	vector<vector<ll>> ans(l,vector<ll>(c));
 	
 	fr(i,l){
 		fr(j,c){
@@ -30,18 +33,11 @@ vector<vector<ll>> mm(vector<vector<ll>> a, vector<vector<ll>> b){
 	return ans;
 }
 
-//matriz identidade N x N
-vector<vector<ll>> ident(int n){
-	vector<vector<ll>> ans(n,vector<ll>(n,0));
-	
-	fr(i,n) ans[i][i] = 1;
-	
-	return ans;
-}
-
-//Eleva matriz a um expoente
+/*
+    Eleva matriz a um expoente que deve ser >=1
+    se for zero deveria retornar matriz identidade
+*/
 vector<vector<ll>> em(vector<vector<ll>> a, ll exp){
-	if(exp==0) return ident(a.size());
 	if(exp==1) return a;
 	vector<vector<ll>> mid = em(a,exp/2);
 	if(exp%2) return mm(mm(mid,mid),a);
@@ -70,14 +66,18 @@ int main(){
     
     vector<vector<ll>> f0, t(k,vector<ll>(k));
     
-    //fazendo f0
+    //fazendo f0 - MUDA
     vector<ll> aux;
     aux.eb(2);
     fr(i,k-1) aux.eb(1);
     f0.eb(aux);
     
     //fazendo matriz t
+
+    //isso nao muda geralmente
     fr(i,k-1) t[i][i+1] = 1;
+    
+    //pondo coeficientes na primeira coluna
     t[0][0] = 1;
     t[k-1][0] = 1;
     
@@ -88,7 +88,6 @@ int main(){
         cout << ans[0][0] << endl;
     }   
     
-	
 	return 0;
 }
 
