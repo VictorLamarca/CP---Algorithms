@@ -1,0 +1,2 @@
+cp /home/vlamarca/myBashes/compara_random.cpp $1
+gedit $1 &

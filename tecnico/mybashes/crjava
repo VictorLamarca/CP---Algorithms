@@ -1,0 +1,5 @@
+#!/bin/bash
+	
+javac $1 && java ${1:0: ${#1}-5} < input #string $1 sem os 5 ultimos caracteres
+
+

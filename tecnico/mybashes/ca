@@ -1,0 +1,7 @@
+if [ -e $1 ]; then
+    printf $1" ja existe\n"
+    printf "Usar gedit "$1" &\n"
+else 
+    cp /home/vlamarca/myBashes/molde.cpp $1
+    gedit $1 &
+fi

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+xsel --clipboard > input
+if [ "`tail -c 1 input`" != "`printf "\n"`" ]
+	then
+		printf "\n" >> input
+fi
+cat input
+

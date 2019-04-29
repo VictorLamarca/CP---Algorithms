@@ -1,0 +1,3 @@
+cp /home/vlamarca/myBashes/molde.java $1".java"
+gedit $1".java" &
+sed -i -e 's/HelloWorld/'$1'/g' $1".java"
