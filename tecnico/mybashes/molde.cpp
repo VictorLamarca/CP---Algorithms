@@ -20,6 +20,7 @@ typedef pair<ll,ll> pll;
 
 //-DBL_MAX
 //__builtin_popcountll(ll x) - __builtin_popcount(int x)
+// 32-__builtin_clz(ll)(x) = posicao do digito mais significativo = floor(log2(x))
 
 #define prin(a) cout << #a << " = " << (a) << endl
 #define prinv(v) {cout << #v << " = "; for(auto it : v) cout << it << " "; cout << endl;}
