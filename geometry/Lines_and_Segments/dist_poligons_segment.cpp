@@ -53,6 +53,7 @@ long double dist(pt a, pt b, pt c){
 	
 }
 
+/*
 //checa se ponto esta dentro do segmento
 bool inptseg(pt a1, pt b1, pt b2){
 	pt v1 = (a1-b1), v2 = (b2-b1);
@@ -60,20 +61,21 @@ bool inptseg(pt a1, pt b1, pt b2){
 	v1 = b1-a1, v2 = b2-a1;
 	return (v1*v2)<=0;
 }
+*/
 
 //checa se segmentos intersectam (bordas inclusas)
 bool seg_intersect(pt a1, pt a2, pt b1, pt b2){
-	if(inptseg(a1,b1,b2) or inptseg(a2,b1,b2) or inptseg(b1,a1,a2) or inptseg(b2,a1,a2)) return 1;
+	//if(inptseg(a1,b1,b2) or inptseg(a2,b1,b2) or inptseg(b1,a1,a2) or inptseg(b2,a1,a2)) return 1;
 	pt v1, v2, vs;
 	
-	//o resultado eh inteiro, entao nao preciso me preocupar com precisão, apenas overflow
-	v1 = (a1-b1), v2 = (a2-b1), vs = (b2-b1);
-	if( 1.0l*(v1^vs)*(v2^vs) >= -0.5 ) return 0;
+	fr(cor,2){
+	    //o resultado eh inteiro (castiado para double) e nao preciso me preocupar com precisão pois se for valor de modulo pequeno consigo diferenciar de -.5 e se modulo for grande obviamente eh maior que -.5, portanto uso double pois a preocupacao eh overflow
+	    v1 = (a1-b1), v2 = (a2-b1), vs = (b2-b1);
+	    //mudar para -0.5 eh bordas exclusas
+	    if( 1.0l*(v1^vs)*(v2^vs) >= 0.5 ) return 0;
 	
-	swap(a1,b1), swap(a2,b2);
-	
-	v1 = (a1-b1), v2 = (a2-b1), vs = (b2-b1);
-	if( 1.0l*(v1^vs)*(v2^vs) >= -0.5 ) return 0;
+	    swap(a1,b1), swap(a2,b2);
+	}
 	
 	return 1;
 }
