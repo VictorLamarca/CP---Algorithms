@@ -9,7 +9,7 @@ using namespace std;
 
 //LEMBRAR DE POR O MAKE DEPOIS DE MONTAR A ARVORE
 const int N = 1e5+10;
-const int MLOG = 17;
+const int MLOG = 15;
 vector<int> g[N];
 int L[N]; //L[i] = level do nó i (raiz = 0)
 int P[N]; //pai do nó i (raiz = -1)

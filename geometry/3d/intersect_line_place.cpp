@@ -140,62 +140,90 @@ ld dist_seg(vector<pt> vp1, vector<pt> vp2){
     return ans;
 }
 
-pt v[2][10];
+pt esc(pt p, ld k){
+    p.x*=k;
+    p.y*=k;
+    p.z*=k;
+    return p;
+}
+
+//retorna 0 se forem paralelos (0 msm q se intersecao infinita ou nula)
+//p assume o valor da intersecao entre o plano e a reta
+bool intersect_plane_line(vector<pt> t, vector<pt> l, pt &p){
+    assert(t.size()==3);
+    assert(l.size()==2);
+    pt n = (t[1]-t[0])^(t[2]-t[0]);
+    ld d = n*t[0];
+    pt dl = l[1]-l[0];
+    pt ol = l[0];
+    
+    if(sgn(n*dl)==0) return 0;
+    
+    ld k = (d-n*ol)/(n*dl);
+    
+    p = ol+esc(dl,k);
+    return 1;
+}
+
+bool cruza(vector<pt> t, vector<pt> l){
+    pt p;
+    
+    assert(t.size()==3);
+    assert(l.size()==2);
+    
+    if(intersect_plane_line(t,l,p)==0) return 0;
+    
+    return dist_pt_t(p,t)<EPS and (p-l[0])*(p-l[1])<0;
+}
+
+//solves problem I from: https://codeforces.com/gym/102040/standings/friends/true
 
 int main(){
-	/*
-	codigo para parte do problema G da subreg 2010
-	https://www.urionlinejudge.com.br/judge/pt/problems/view/1126
 	
-	Ferramenta que calcula distancia ente linhas no 3d
-	http://www.ambrsoft.com/TrigoCalc/Line3D/Distance2Lines3D_.htm
+	int test;
+	cin >> test;
 	
-	Ferramenta para plotar figuras 3d e ver oq acontece
-	https://www.geogebra.org/3d?lang=pt-BR
-	
-	Notebook que mostra formulas a respeito disso - pag 90
-	https://vlecomte.github.io/cp-geo.pdf
-	
-	*/
-	
-	int t;
-	cin >> t;
-	fr(ii,t){
+	fr(cnt_test,test){
+	    vector<pt> t[2];
+	    
+	    ld dist = INF;
+	    
 	    fr(cor,2){
-            fr(i,4){
-                int x,y,z;
-                scanf("%d%d%d", &x, &y, &z);
-                v[cor][i].x = x;
-                v[cor][i].y = y;
-                v[cor][i].z = z;
-                
-            }
-        }
-        
-        ld ans = INF;
-        
-        fr(cor,2){
-            fr(ipt,4){
-                fr(j,4){
-                    vector<pt> vcur;
-                    fr(i,4) if(i!=j) vcur.eb(v[!cor][i]);
-                    ans = min(ans,dist_pt_t(v[cor][ipt],vcur));
-                }
-            }
-        }
-        
-        fr(i1,4){
-            fr(j1,i1){
-                fr(i2,4){
-                    fr(j2,i2){
-                        ans = min(ans,dist_seg({v[0][i1],v[0][j1]},{v[1][i2],v[1][j2]}));
-                    }
-                }
-            }
-        }
-        
-        printf("%.2lf\n", (double)(ans));
-        
+	        fr(ip,3){
+	            ld x, y, z;
+	            scanf("%Lf%Lf%Lf", &x, &y, &z);
+	            t[cor].eb(x,y,z);
+	        }
+	    }
+	    
+	    fr(i_sem,3){
+	        fr(j_sem,3){
+	        
+	            vector<pt> v1, v2;
+	            fr(i,3) if(i!=i_sem) v1.eb(t[0][i]);
+	            fr(j,3) if(j!=j_sem) v2.eb(t[1][j]);
+	            
+	            dist = min(dist,dist_seg({v1[0],v1[1]},{v2[0],v2[1]}));
+	        }
+	    }
+	    
+	    fr(cor,2){
+	        fr(i,3){
+	            dist = min(dist,dist_pt_t(t[!cor][i],t[cor]));
+	        }
+	    }
+	    
+	    fr(cor,2){
+	        fr(i_sem,3){
+	            vector<pt> l;
+	            fr(i,3) if(i!=i_sem) l.eb(t[!cor][i]);
+	            if(cruza(t[cor],l)){
+	                dist = 0;
+	            }
+	        }
+	    }  
+	    
+	    printf("%.10Lf\n", dist);
 	}
 	
 	return 0;
