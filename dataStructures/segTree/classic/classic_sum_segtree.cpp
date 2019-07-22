@@ -36,14 +36,14 @@ void build(int no = 1, int l = 0, int r = n){
 
 //mudar o valor, v[i] = x (nao aumentar em x)
 void modify(int i, ll x, int no = 1, int l = 0, int r = n){
-    s[no] += x - v[i];
     if(r-l==1){
-        v[l] = x;
+        s[no] = x;
         return;
     }
     int mid = (l+r)/2;
     if(i<mid) modify(i,x,2*no,l,mid);
     else modify(i,x,2*no+1,mid,r);    
+    s[no] = s[2*no]+s[2*no+1]; //fazer operacao no final (apos processar filhos) - inves de fazer s[no] += x-v[l] no inicio
 }
 
 ll query(int lq, int rq, int no = 1, int l = 0, int r = n){
