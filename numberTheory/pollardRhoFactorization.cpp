@@ -1,58 +1,18 @@
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 using namespace std;
 
-#define fr(i,n) for(int i=0;i<(n);i++)
-#define frit(it,c) for(auto it = (c).begin();it!=(c).end();it++)
-// for(auto it : g[i].nb)
-
 typedef long long ll;
-typedef long double ld;
-
-#define pb push_back
-
-#define all(a) a.begin(),a.end() 
-
+#define fr(i,n) for(int i = 0; i<n; i++)
 #define fi first
 #define se second
-typedef pair<int,int> pii;
-
-#define PI acos(-1)
-ll MOD = 1e9+7;
-
-//LONG_LONG_MAX
-//-DBL_MAX
-
-bool debug = 1;
-#define printa(a) cout << #a << " = " << (a) << endl
-#define prin(a) if(debug) cout << #a << " = " << (a) << endl
-#define prinsep if(debug) cout << "------" << endl;
-#define cendl if(debug) cout << endl
-
-/*
-	Complexidade:
-	100*O(raiz quarta de n)
-	que é raiz do menor primo que divide n
-	
-	100 pq tem na vdd um big constant factor,
-	da pra fatorar qlqr numero ateh 10^18 em 356 seg
-	que é 100*sqrt(1e9)
-	
-*/
-
-#define rm (rand()%MOD)
-#define rm2 (rm*rm)%(MOD+2)
-
-ll gcd(ll a,ll b){
-	if(b>a) swap(a,b);
-	if(b==0) return a;
-	return gcd(b,a%b);
-}
 
 ll grand(){
-	ll a = rm2;
-	a<<=32;
-	a+=rm2;
-	return a;
+	ll ans = 0;
+	fr(i,4){
+		ans <<=15;
+		ans += rand()%(1<<15);
+	}
+	return ans;
 }
 
 ll mulmod(ll a, ll b, ll mod){
@@ -79,7 +39,6 @@ bool ispp(ll n){
 		d/=2;
 		s++;
 	}
-	
 	fr(k,64){
 		ll a = (grand()%(n-3))+2;
 		ll x = exp_mod(a,d,n);
@@ -92,7 +51,6 @@ bool ispp(ll n){
 			if(x!=n-1) return 0;
 		}
 	}
-	
 	return 1;
 }
 
@@ -105,7 +63,7 @@ ll rho(ll n){
 		x = (mulmod(x,x,n)+c)%n;
 		xx = (mulmod(xx,xx,n)+c)%n;
 		xx = (mulmod(xx,xx,n)+c)%n;
-		d = gcd(abs(x-xx),n);
+		d = __gcd(abs(x-xx),n);
 	} while(d==1);
 	return d;
 }
@@ -124,18 +82,37 @@ void factor(ll n){
 	return;
 }
 
-int main(){
-	ll n;
-	
-	cin >> n;
-	
-	factor(n);
-	
-	prin(n);
-	for(auto i : F){
-		prin(i.fi);
-	}
-	
-	return 0;
+//--------------------------
+//solves problem f from: https://codeforces.com/gym/102299/standings
+// USP 2019 try outs
+
+ll mypot(ll b, ll x){
+	ll ans = 1;
+	fr(i,x) ans*=b;
+	return ans;
 }
 
+int main(){
+	srand(time(0));
+	ll a, b;
+	cin >> a >> b;
+	
+	ll g = __gcd<ll>(a,b);
+	
+	b/=g;
+	
+	if(b==1){ 
+		cout << 2 << endl;
+		return 0;
+	}
+	
+	factor(b);
+	
+	ll ans = 1;
+	
+	for(auto &par : F){
+		ans *= par.fi;
+	}
+	
+	cout << ans << endl;
+}
