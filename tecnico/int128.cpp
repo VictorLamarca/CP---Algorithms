@@ -14,12 +14,8 @@ void printa(__int128 x){
 
 int main(){
 	__int128 x = 1e15l;
-	
 	x = x*x;
 	x+= 19;
-	 
 	printa(x);
-	
-	return 0;
 }
 
