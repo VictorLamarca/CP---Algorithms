@@ -9,7 +9,7 @@ typedef long long ll;
 const int N = 2e5+10;
 
 vector<int> make_suf(string s){
-	s+=(char)('a'-1);
+	s+=(char)0;
 	int n = s.size();
 	vector<int> p(n), c(n), cnt(max(256,n));
 	
