@@ -1,134 +1,141 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define FILE_IN freopen("kotlin.in", "r", stdin);
-#define FILE_OUT freopen("kotlin.out", "w", stdout);
-
-#define fr(i,n) for(int i=0;i<n;i++)
-#define frr(i,a,b) for(int i =a;i<=b;i++)
-// for(auto it : g[i].nb)
+#define fr(i,n) for(int i = 0; i<n; i++)
+#define sz(v) (int)(v).size()
+#define prin(a) cout << #a << " = " << a << endl
+#define all(v) (v).begin(),(v).end()
 
 typedef long long ll;
-typedef long double ld;
 
-#define pb push_back
+//solves https://codeforces.com/contest/1334/problem/F
 
-#define all(a) a.begin(),a.end() 
-
-#define fi first
-#define se second
-typedef pair<int,int> pii;
-typedef pair<ll,ll> pll;
-
-const long double PI = acos(-1.0l);
-const ll MOD = 1e9+7;
-
-//LLONG_MAX
-//-DBL_MAX
-
-bool debug = 1;
-#define printa(a) cout << #a << " = " << (a) << endl
-#define prin(a) if(debug) cout << #a << " = " << (a) << endl
-#define soprin(a) if(debug) cout << (a)
-#define ppal(a)  if(debug) cout << #a << endl
-#define prinsep if(debug) cout << "------" << endl
-#define cendl if(debug) cout << endl
-#define prinpar(p) if(debug) cout << #p << ".fi=" << (p).fi << " " << #p << ".se=" << (p).se << endl
-#define print(tup) if(debug) cout << #tup << " = {" << get(tup,0) << ", " << get(tup,1) << ", " << get(tup,2) << "}\n"
-#define prinv(v) if(debug){ cout << #v << ":" << endl; for(auto it = (v).begin(); it!=(v).end();it++){ cout << *it << " ";} cout << endl;}
-
-const int N = 1e5+10;
-
-/*  LEMBRAR
-    Por capacidade como 2*N
+/*
+    Lembrar de 2*N no tamanho da seg
+    
+    Comentados estao oq tornam a em seg de minimo
+    
     Em build faco atual = filhos (ponho vetor em [n,2*n-1] e faco de n-1 até 1
     Em Update mudo folha e faco pai = atual (while pos>1, ou seja tem pai)
     Em query passo por td (l+=n, r+=n) ate l<r
+    
+    nos na seg de [1,2*n-1], folhas (array) de [n,2*n-1]
 */
 
-//funciona para toda funcao comutativa iterativa, soma, min, max, xor, etc
-ll seg[2*N]; //indices de [1,2*n-1], folhas (array) de [n,2*n-1]
-ll n, nq;
-
+template<int n> struct Seg{
+	ll *v, *s;
+	
 void build(){
 	for(int i = n-1;i>0;i--){ 
-	//seg[i] = min(seg[i<<1],seg[i<<1|1]);
-	seg[i] = seg[i<<1]+seg[i<<1|1];
-	prin(i);
-	prin(seg[i]);
-	cendl;
+		//s[i] = min(s[i<<1],s[i<<1|1]);
+		s[i] = s[i<<1]+s[i<<1|1];
 	}
 }
 
-//pos 0-indexed
-void up(int pos, ll val){
-	for(seg[pos+=n]=val;pos>1;pos>>=1) seg[pos>>1] = min(seg[pos],seg[pos^1]);
+Seg(ll *vb, ll *sb){
+	v = vb;
+	s = sb;
+	build();
+}
+
+//pos 0-indexed (incrementa, nao atualiza)
+void increment(int pos, ll val){
+	for(s[pos+=n]+=val;pos>1;pos>>=1) 
+		//s[pos>>1] = min(s[pos],s[pos^1]);
+		s[pos>>1] = s[pos]+s[pos^1];
 }
 
 //array é abstraido para 0-indexed (nas folhas da seg) e [l,r)
 ll qr(int l, int r){
-	ll ans = LLONG_MAX;
+	ll ans = 0;
+	//ll ans = LLONG_MAX;
 	for(l+=n,r+=n;l<r;l>>=1,r>>=1){
-		if(l&1) ans = min(ans,seg[l++]);
-		if(r&1) ans = min(ans,seg[--r]);
+		if(l&1) ans = ans+s[l++];
+		if(r&1) ans = ans+s[--r];
+		//if(l&1) ans = min(ans,s[l++]);
+		//if(r&1) ans = min(ans,s[--r]);
 	}
 	return ans;
 }
+	
+};
 
+const int N = 5e5+10;
+ll n, m;
+ll a[N], b[N], valb_to_id[N], bestsf[N], p[N];
+ll val_can_delete[N];
+ll id_can_delete[N];
+
+ll s[2*N+10];
+ll v[N+10];
 
 int main(){
-	//FILE_IN FILE_OUT
+	scanf("%lld", &n);
+	fr(i,n) scanf("%lld", a+i);
+	fr(i,n) scanf("%lld", p+i);
 	
-	cin >> n >> nq;
+	scanf("%lld", &m);
+	fr(i,N) valb_to_id[i] = -1;
+	fr(i,m){
+		scanf("%lld", b+i);
+		valb_to_id[b[i]] = i;
+	}
 	
-	fr(i,n) scanf("%lld", seg+i+n);
-	build();
-	
-	prin(seg[2]);
-	return 0;
-	
-	fr(i,nq){
-		int t;
-		scanf("%d", &t);
-		if(t==0){ // qr
-			int l, r;
-			scanf("%d%d", &l, &r);
-			l--;
-			cout << qr(l,r) << endl;
+	ll add_ans = 0;
+	vector<int> v1, v2;
+	fr(i,n){
+		if(valb_to_id[a[i]]==-1 and p[i]<0){
+			add_ans+=p[i];
 		} else{
-			int pos;
-			ll val;
-			scanf("%d%lld", &pos, &val);
-			pos--;
-			up(pos,val);
+			v1.push_back(a[i]);
+			v2.push_back(p[i]);
+		}
+	}
+	n = sz(v1);
+	fr(i,n){
+		a[i] = v1[i];
+		p[i] = v2[i];
+	}
+	
+	fr(i,n){
+		if(a[i]>b[m-1]) add_ans+=p[i];
+	}
+	
+	fr(i,m) bestsf[i] = LLONG_MAX;
+	Seg<N> seg(v,s);
+	
+	for(int i = n-1; i>=0; i--){
+		int id = valb_to_id[a[i]];
+		if(id!=-1){
+			id_can_delete[i] = val_can_delete[a[i]];
+			if(p[i]<0) val_can_delete[a[i]]+=p[i];
 		}
 	}
 	
-	return 0;
+	fr(i,n){
+		if(valb_to_id[a[i]]!=-1){
+			int id = valb_to_id[a[i]];
+			if(id==0 or bestsf[id-1]<LLONG_MAX){
+				ll tot = 0;
+				ll best_ant = 0;
+				ll cost_meio = 0;
+				ll ant = 0;
+				if(id){ 
+					ant = b[id-1];
+					best_ant = bestsf[id-1];
+				} 
+				cost_meio = seg.qr(ant+1,b[id]+1);
+				tot = best_ant + cost_meio + id_can_delete[i];
+				bestsf[id] = min(bestsf[id],tot);
+			}
+		}
+		seg.increment(a[i],p[i]);
+	}
+	
+	if(bestsf[m-1]<LLONG_MAX){
+		puts("YES");
+		printf("%lld\n", bestsf[m-1]+add_ans);
+	} else{
+		puts("NO");
+	}
 }
-
-/*
-6 9
-3 7 -100 1 4 20
-0 1 6
-0 1 2
-0 4 6
-1 3 100
-0 1 6
-1 4 5
-0 3 6
-1 3 -1000
-0 1 6 
-*/
-
-/* resp:
--100
-3
-1 
-1 
-4 
--1000
-*/
-
-
-
