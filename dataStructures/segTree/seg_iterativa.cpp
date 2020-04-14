@@ -22,11 +22,11 @@ typedef long long ll;
     nos na seg de [1,2*n-1], folhas (array) de [n,2*n-1]
 */
 
-template<int n> struct Seg{
+template<int N> struct Seg{
 	ll *v, *s;
 	
 void build(){
-	for(int i = n-1;i>0;i--){ 
+	for(int i = N-1;i>0;i--){ 
 		//s[i] = min(s[i<<1],s[i<<1|1]);
 		s[i] = s[i<<1]+s[i<<1|1];
 	}
@@ -40,7 +40,7 @@ Seg(ll *vb, ll *sb){
 
 //pos 0-indexed (incrementa, nao atualiza)
 void increment(int pos, ll val){
-	for(s[pos+=n]+=val;pos>1;pos>>=1) 
+	for(s[pos+=N]+=val;pos>1;pos>>=1) 
 		//s[pos>>1] = min(s[pos],s[pos^1]);
 		s[pos>>1] = s[pos]+s[pos^1];
 }
@@ -49,7 +49,7 @@ void increment(int pos, ll val){
 ll qr(int l, int r){
 	ll ans = 0;
 	//ll ans = LLONG_MAX;
-	for(l+=n,r+=n;l<r;l>>=1,r>>=1){
+	for(l+=N,r+=N;l<r;l>>=1,r>>=1){
 		if(l&1) ans = ans+s[l++];
 		if(r&1) ans = ans+s[--r];
 		//if(l&1) ans = min(ans,s[l++]);

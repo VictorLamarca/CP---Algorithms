@@ -16,10 +16,10 @@ typedef long long ll;
     intervalos abertos [l,r)
 */
 
-template<int n> struct Seg{
+template<int N> struct Seg{
 	ll *v, *s;
 	
-void build(int no = 1, int l = 0, int r = n){
+void build(int no = 1, int l = 0, int r = N){
     if(r-l==1){ 
         s[no] = v[l];
         return;
@@ -38,7 +38,7 @@ Seg(ll *vb, ll *sb){
 }
 
 //Muda o valor, v[i] = x
-void update(int i, ll x, int no = 1, int l = 0, int r = n){
+void update(int i, ll x, int no = 1, int l = 0, int r = N){
     if(r-l==1){
         s[no] = x; // se quiser fazer upd de incremento tal que v[i] += x, basta mudar = por += aqui
         return;
@@ -50,7 +50,7 @@ void update(int i, ll x, int no = 1, int l = 0, int r = n){
     //s[no] = s[2*no]+s[2*no+1];
 }
 
-ll query(int lq, int rq, int no = 1, int l = 0, int r = n){
+ll query(int lq, int rq, int no = 1, int l = 0, int r = N){
     //if(rq<=l or r<=lq) return 0; //totalmente fora
     if(rq<=l or r<=lq) return LLONG_MAX;
     if(lq<=l and r<=rq) return s[no]; //range q estou totalmente dentro do range da query
