@@ -7,17 +7,16 @@ typedef long long ll;
 
 //--------------------------------------
 //No geral, mudar oq esta enter os --- (ateh upd lazy), mas sempre ha excessoes
-//Lembrar que devo criar as folhas (v[]) de acordo na main tmbm
-//Esse tipo eh bom pois consigo fazer o tamanho generico pra varias segs
+//Ver build em inicializacao de s[] a partir de v[] tmbm
 struct node{
 	ll val = 0, lazy;
-	int l, r;
+	int l, r; // (l,r) no node da propria seg permite que nao precise ter (l,r) nos parametros das funcoes
 	node(){}
 	node(ll valb, int lb, int rb){
 		val = valb;
 		l = lb, r = rb;
 		//no.lazy esta setado quer dizer que os filhos nao tiveram a propagacao, mas o no.val esta correto!
-		//lazy inicial eh sempre nulo, nunca somo dois pra dar o pai se o pai tiver com lazy, se estou somando, eh pq o lazy foi propagado
+		//lazy inicial eh sempre nulo, nunca somo dois pra dar o pai se o pai tiver com lazy, se estou somando, eh pq o lazy do pai foi propagado
 		lazy = 0;
 	}
 	
@@ -87,13 +86,14 @@ void upd(ll x, int lup, int rup, int no = 1){
 ll query(int lq, int rq, int no = 1){
     if(rq<=s[no].l or s[no].r<=lq) return nulo();
     if(lq<=s[no].l and s[no].r<=rq){
-        return s[no].val;
+        return s[no].val; //verificar aqui tmbm
     } 
     pass(no);
     return soma_query(query(lq,rq,2*no), query(lq,rq,2*no+1));
 }
 };
 
+//exemplo seg generica: https://codeforces.com/gym/102307/submission/77331716
 //Seg soma solves: https://www.spoj.com/problems/HORRIBLE/
 //Seg max solves: https://codeforces.com/gym/102307/problem/E
 
