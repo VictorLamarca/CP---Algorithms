@@ -77,8 +77,8 @@ template<int N, bool IN_EDGES> struct HLD {
 		root[1] = 1; pai[1] = d[1] = 0; 
 		dfsSz(); dfsHld(); }
 	Seg<N> tree;
-	template <class BinaryOp>
-	void processPath(int u, int v, BinaryOp op) {
+	template <class Op>
+	void processPath(int u, int v, Op op) {
 		for (; root[u] != root[v]; v = pai[root[v]]) {
 			if (d[root[u]] > d[root[v]]) swap(u, v);
 			op(pos[root[v]], pos[v]); }
