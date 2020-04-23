@@ -42,14 +42,14 @@ void upd(ll x, int lup, int rup, int no = 1, int l = 0, int r = N){
     upd(x,lup,rup,2*no+1,mid,r);
     s[no] = max(s[2*no],s[2*no+1]);
 }
-ll query(int lq, int rq, int no = 1, int l = 0, int r = N){
+ll qry(int lq, int rq, int no = 1, int l = 0, int r = N){
     if(rq<=l or r<=lq) return -LLONG_MAX;
     if(lq<=l and r<=rq){
         return s[no];
     } 
     pass(no,l,r);
     int mid = (l+r)/2;
-    return max(query(lq,rq,2*no,l,mid),query(lq,rq,2*no+1,mid,r));
+    return max(qry(lq,rq,2*no,l,mid),qry(lq,rq,2*no+1,mid,r));
 }
 };
 
@@ -92,7 +92,7 @@ template<int N, bool IN_EDGES> struct HLD {
 		tree.upd(val,pos[v]+IN_EDGES,pos[v]+sz[v]); }
 	ll queryPath(int u, int v) { 
 		ll res = -LLONG_MAX; processPath(u,v,[this,&res](int l,int r) { 
-			res = max(tree.query(l,r+1),res); });
+			res = max(tree.qry(l,r+1),res); });
 		return res; }
 };
 

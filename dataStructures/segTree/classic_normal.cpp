@@ -38,25 +38,25 @@ Seg(ll *vb, ll *sb){
 }
 
 //Muda o valor, v[i] = x
-void update(int i, ll x, int no = 1, int l = 0, int r = N){
+void upd(int i, ll x, int no = 1, int l = 0, int r = N){
     if(r-l==1){
         s[no] = x; // se quiser fazer upd de incremento tal que v[i] += x, basta mudar = por += aqui
         return;
     }
     int mid = (l+r)/2;
-    if(i<mid) update(i,x,2*no,l,mid);
-    else update(i,x,2*no+1,mid,r);  
+    if(i<mid) upd(i,x,2*no,l,mid);
+    else upd(i,x,2*no+1,mid,r);  
     s[no] = min(s[2*no],s[2*no+1]);  
     //s[no] = s[2*no]+s[2*no+1];
 }
 
-ll query(int lq, int rq, int no = 1, int l = 0, int r = N){
+ll qry(int lq, int rq, int no = 1, int l = 0, int r = N){
     //if(rq<=l or r<=lq) return 0; //totalmente fora
     if(rq<=l or r<=lq) return LLONG_MAX;
-    if(lq<=l and r<=rq) return s[no]; //range q estou totalmente dentro do range da query
+    if(lq<=l and r<=rq) return s[no]; //range q estou totalmente dentro do range da qry
     int mid = (l+r)/2;
-    return min(query(lq,rq,2*no,l,mid),query(lq,rq,2*no+1,mid,r));
-    //return query(lq,rq,2*no,l,mid) + query(lq,rq,2*no+1,mid,r);
+    return min(qry(lq,rq,2*no,l,mid),qry(lq,rq,2*no+1,mid,r));
+    //return qry(lq,rq,2*no,l,mid) + qry(lq,rq,2*no+1,mid,r);
 }
 	
 };
@@ -82,12 +82,12 @@ int main(){
             int l, r;
             scanf("%d%d", &l, &r);
             l--;
-            printf("%lld\n", seg.query(l,r));
+            printf("%lld\n", seg.qry(l,r));
         } else{
             int p, x;
             scanf("%d%d", &p, &x);
             p--;
-            seg.update(p,x);
+            seg.upd(p,x);
         }
     }
 	return 0;

@@ -83,13 +83,13 @@ void upd(ll x, int lup, int rup, int no = 1){
     s[no] = soma_update(s[2*no],s[2*no+1]);
 }
 
-ll query(int lq, int rq, int no = 1){
+ll qry(int lq, int rq, int no = 1){
     if(rq<=s[no].l or s[no].r<=lq) return nulo();
     if(lq<=s[no].l and s[no].r<=rq){
         return s[no].val; //verificar aqui tmbm
     } 
     pass(no);
-    return soma_query(query(lq,rq,2*no), query(lq,rq,2*no+1));
+    return soma_query(qry(lq,rq,2*no), qry(lq,rq,2*no+1));
 }
 };
 
@@ -122,7 +122,7 @@ int main(){
                 int l, r;
                 scanf("%d%d", &l, &r);
                 l--;
-                printf("%lld\n", seg.query(l,r));
+                printf("%lld\n", seg.qry(l,r));
             }
         }
     }

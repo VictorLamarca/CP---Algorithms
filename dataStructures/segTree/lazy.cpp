@@ -76,15 +76,15 @@ void upd(ll x, int lup, int rup, int no = 1, int l = 0, int r = N){
     //s[no] = max(s[2*no],s[2*no+1]);
 }
 
-ll query(int lq, int rq, int no = 1, int l = 0, int r = N){
+ll qry(int lq, int rq, int no = 1, int l = 0, int r = N){
     if(rq<=l or r<=lq) return 0; //mudar return se for de minimo
     if(lq<=l and r<=rq){
         return s[no];
     } 
     pass(no,l,r);
     int mid = (l+r)/2;
-    return query(lq,rq,2*no,l,mid) + query(lq,rq,2*no+1,mid,r);
-    //return max(query(lq,rq,2*no,l,mid),query(lq,rq,2*no+1,mid,r));
+    return qry(lq,rq,2*no,l,mid) + qry(lq,rq,2*no+1,mid,r);
+    //return max(qry(lq,rq,2*no,l,mid),qry(lq,rq,2*no+1,mid,r));
 }
 };
 
@@ -120,7 +120,7 @@ int main(){
                 int l, r;
                 scanf("%d%d", &l, &r);
                 l--;
-                printf("%lld\n", seg.query(l,r));
+                printf("%lld\n", seg.qry(l,r));
             }
         }
     }

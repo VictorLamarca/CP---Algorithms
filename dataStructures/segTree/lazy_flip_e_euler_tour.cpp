@@ -47,12 +47,12 @@ void pass(int no, int l, int r){
     lazy[no] = 0;
 }
 
-int query(int lq, int rq, int no = 1, int l = 0, int r = ng){
+int qry(int lq, int rq, int no = 1, int l = 0, int r = ng){
     if(rq<=l or lq>=r) return 0;
     if(l>=lq and rq>=r) return s[no];
     pass(no,l,r);
     int mid = (l+r)/2;
-    return query(lq,rq,2*no,l,mid) + query(lq,rq,2*no+1,mid,r);
+    return qry(lq,rq,2*no,l,mid) + qry(lq,rq,2*no+1,mid,r);
 }
 
 void upd(int lq, int rq, int no = 1, int l = 0, int r = ng){
@@ -108,7 +108,7 @@ int main(){
         scanf(" %s %d", str, &no);
         no--;
         if(str[0]=='g'){
-            printf("%d\n", seg.query(no_to_inic[no],no_to_fim[no]));
+            printf("%d\n", seg.qry(no_to_inic[no],no_to_fim[no]));
         } else{
             seg.upd(no_to_inic[no],no_to_fim[no]);
         }

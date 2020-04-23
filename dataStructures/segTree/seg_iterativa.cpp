@@ -46,7 +46,7 @@ void increment(int pos, ll val){
 }
 
 //array é abstraido para 0-indexed (nas folhas da seg) e [l,r)
-ll qr(int l, int r){
+ll qry(int l, int r){
 	ll ans = 0;
 	//ll ans = LLONG_MAX;
 	for(l+=N,r+=N;l<r;l>>=1,r>>=1){
@@ -124,7 +124,7 @@ int main(){
 					ant = b[id-1];
 					best_ant = bestsf[id-1];
 				} 
-				cost_meio = seg.qr(ant+1,b[id]+1);
+				cost_meio = seg.qry(ant+1,b[id]+1);
 				tot = best_ant + cost_meio + id_can_delete[i];
 				bestsf[id] = min(bestsf[id],tot);
 			}
