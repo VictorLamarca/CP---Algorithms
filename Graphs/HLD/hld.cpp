@@ -53,13 +53,13 @@ ll query(int lq, int rq, int no = 1, int l = 0, int r = N){
 }
 };
 
-template<int N, bool IN_EDGES> struct HLD { 
+template<int N, bool IN_EDGES> struct HLD {
 	vector<int> g[N];
 	int pai[N], sz[N], d[N];
 	int root[N], pos[N]; /// vi rpos;
 	void ae(int a, int b) { g[a].push_back(b), g[b].push_back(a); }
-	void dfsSz(int no = 1) {
-		if (pai[no]) g[no].erase(find(all(g[no]),pai[no]));
+	void dfsSz(int no = 0) {
+		if (~pai[no]) g[no].erase(find(all(g[no]),pai[no]));
 		sz[no] = 1;
 		for(auto &it : g[no]) {
 			pai[it] = no; d[it] = d[no]+1;
@@ -67,14 +67,14 @@ template<int N, bool IN_EDGES> struct HLD {
 			if (sz[it] > sz[g[no][0]]) swap(it, g[no][0]);
 		}
 	}
-	void dfsHld(int no = 1) {
+	void dfsHld(int no = 0) {
 		static int t = 0; pos[no] = t++; /// rpos.pb(no);
 		for(auto &it : g[no]) {
 			root[it] = (it == g[no][0] ? root[no] : it);
 			dfsHld(it); }
 	}
 	void init() {
-		root[1] = 1; pai[1] = d[1] = 0; 
+		root[0] = d[0] = 0; pai[0] = -1;
 		dfsSz(); dfsHld(); }
 	Seg<N> tree;
 	template <class Op>
@@ -108,6 +108,7 @@ int main(){
 	fr(i,n-1){
 		int u, v;
 		scanf("%d%d", &u, &v);
+		u--,v--;
 		hld.ae(u,v);
 	}
 	hld.init();
@@ -118,10 +119,12 @@ int main(){
 		if(str[0]=='a'){
 			int t, val;
 			scanf("%d%d", &t, &val);
+			t--;
 			hld.modifySubtree(t,val);
 		} else{
 			int u, v;
 			scanf("%d%d", &u, &v);
+			u--,v--;
 			printf("%lld\n", hld.queryPath(u,v));
 		}
 	}
