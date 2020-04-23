@@ -39,7 +39,7 @@ Seg(ll *vb, ll *sb){
 }
 
 //pos 0-indexed (incrementa, nao atualiza)
-void increment(int pos, ll val){
+void upd(int pos, ll val){
 	for(s[pos+=N]+=val;pos>1;pos>>=1) 
 		//s[pos>>1] = min(s[pos],s[pos^1]);
 		s[pos>>1] = s[pos]+s[pos^1];
@@ -129,7 +129,7 @@ int main(){
 				bestsf[id] = min(bestsf[id],tot);
 			}
 		}
-		seg.increment(a[i],p[i]);
+		seg.upd(a[i],p[i]);
 	}
 	
 	if(bestsf[m-1]<LLONG_MAX){
