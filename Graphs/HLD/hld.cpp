@@ -54,6 +54,7 @@ ll qry(int lq, int rq, int no = 1, int l = 0, int r = N){
 };
 
 template<int N, bool IN_EDGES> struct HLD {
+	int t;
 	vector<int> g[N];
 	int pai[N], sz[N], d[N];
 	int root[N], pos[N]; /// vi rpos;
@@ -68,13 +69,13 @@ template<int N, bool IN_EDGES> struct HLD {
 		}
 	}
 	void dfsHld(int no = 0) {
-		static int t = 0; pos[no] = t++; /// rpos.pb(no);
+		pos[no] = t++; /// rpos.pb(no);
 		for(auto &it : g[no]) {
 			root[it] = (it == g[no][0] ? root[no] : it);
 			dfsHld(it); }
 	}
 	void init() {
-		root[0] = d[0] = 0; pai[0] = -1;
+		root[0] = d[0] = t = 0; pai[0] = -1;
 		dfsSz(); dfsHld(); }
 	Seg<N> tree;
 	template <class Op>
@@ -97,6 +98,7 @@ template<int N, bool IN_EDGES> struct HLD {
 };
 
 //solves https://www.hackerrank.com/challenges/subtrees-and-paths/problem
+//other problems here: https://blog.anudeep2011.com/heavy-light-decomposition/
 
 const int N = 1e5+10;
 char str[100];
