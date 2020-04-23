@@ -30,7 +30,7 @@ void pass(int no, int l, int r){
     updlazy(2*no+1,mid,r,lazy[no]);
     lazy[no] = 0;
 }
-void upd(ll x, int lup, int rup, int no = 1, int l = 0, int r = N){
+void upd(int lup, int rup, ll x, int no = 1, int l = 0, int r = N){
     if(rup<=l or r<=lup) return;
     if(lup<=l and r<=rup){
         updlazy(no,l,r,x);
@@ -38,8 +38,8 @@ void upd(ll x, int lup, int rup, int no = 1, int l = 0, int r = N){
     }   
     pass(no,l,r);
     int mid = (l+r)/2;
-    upd(x,lup,rup,2*no,l,mid);
-    upd(x,lup,rup,2*no+1,mid,r);
+    upd(lup,rup,x,2*no,l,mid);
+    upd(lup,rup,x,2*no+1,mid,r);
     s[no] = max(s[2*no],s[2*no+1]);
 }
 ll qry(int lq, int rq, int no = 1, int l = 0, int r = N){
@@ -87,9 +87,9 @@ template<int N, bool IN_EDGES> struct HLD {
 	}
 	void modifyPath(int u, int v, int val) { 
 		processPath(u,v,[this, &val](int l,int r) { 
-			tree.upd(val,l,r+1); }); }
+			tree.upd(l,r+1,val); }); }
 	void modifySubtree(int v, int val) { 
-		tree.upd(val,pos[v]+IN_EDGES,pos[v]+sz[v]); }
+		tree.upd(pos[v]+IN_EDGES,pos[v]+sz[v],val); }
 	ll queryPath(int u, int v) { 
 		ll res = -LLONG_MAX; processPath(u,v,[this,&res](int l,int r) { 
 			res = max(tree.qry(l,r+1),res); });

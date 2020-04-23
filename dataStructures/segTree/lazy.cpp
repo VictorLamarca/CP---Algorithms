@@ -62,7 +62,7 @@ void pass(int no, int l, int r){
     lazy[no] = 0;
 }
 
-void upd(ll x, int lup, int rup, int no = 1, int l = 0, int r = N){
+void upd(int lup, int rup, ll x, int no = 1, int l = 0, int r = N){
     if(rup<=l or r<=lup) return;
     if(lup<=l and r<=rup){
         updlazy(no,l,r,x);
@@ -70,8 +70,8 @@ void upd(ll x, int lup, int rup, int no = 1, int l = 0, int r = N){
     }   
     pass(no,l,r); //devo passar lazy do nó que estou pois analisarei filhos
     int mid = (l+r)/2;
-    upd(x,lup,rup,2*no,l,mid);
-    upd(x,lup,rup,2*no+1,mid,r);
+    upd(lup,rup,x,2*no,l,mid);
+    upd(lup,rup,x,2*no+1,mid,r);
     s[no] = s[2*no] + s[2*no+1];
     //s[no] = max(s[2*no],s[2*no+1]);
 }
@@ -115,7 +115,7 @@ int main(){
                 int l, r, x;
                 scanf("%d%d%d", &l, &r, &x);
                 l--;
-                seg.upd(x,l,r);
+                seg.upd(l,r,x);
             } else{
                 int l, r;
                 scanf("%d%d", &l, &r);

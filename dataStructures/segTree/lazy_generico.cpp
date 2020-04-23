@@ -71,15 +71,15 @@ void pass(int no){
     s[no].lazy = 0;
 }
 
-void upd(ll x, int lup, int rup, int no = 1){
+void upd(int lup, int rup, ll x, int no = 1){
     if(rup<=s[no].l or s[no].r<=lup) return;
     if(lup<=s[no].l and s[no].r<=rup){
         updlazy(no,x);
         return;
     }   
     pass(no);
-    upd(x,lup,rup,2*no);
-    upd(x,lup,rup,2*no+1);
+    upd(lup,rup,x,2*no);
+    upd(lup,rup,x,2*no+1);
     s[no] = soma_update(s[2*no],s[2*no+1]);
 }
 
@@ -117,7 +117,7 @@ int main(){
                 int l, r, x;
                 scanf("%d%d%d", &l, &r, &x);
                 l--;
-                seg.upd(x,l,r);
+                seg.upd(l,r,x);
             } else{
                 int l, r;
                 scanf("%d%d", &l, &r);
