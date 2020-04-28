@@ -6,6 +6,7 @@ typedef long long ll;
 #define fi first
 #define se second
 
+//rand gera por garantia pelo menos de [0,2^15-1]
 ll grand(){
 	ll ans = 0;
 	fr(i,4){
@@ -31,6 +32,7 @@ ll exp_mod(ll a, ll x, ll m) {
     return res;
 }
 
+//Rabin Miller
 bool ispp(ll n){
 	if(n<=1) return 0;
 	if(n<=3) return 1;
@@ -68,6 +70,7 @@ ll rho(ll n){
 	return d;
 }
 
+//mapa de primo para frequencia
 map<ll,int> F;
 
 void factor(ll n){
