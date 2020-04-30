@@ -1,48 +1,20 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define FILE_IN freopen("kotlin.in", "r", stdin);
-#define FILE_OUT freopen("kotlin.out", "w", stdout);
-
-#define fr(i,n) for(int i=0;i<n;i++)
-#define frr(i,a,b) for(int i =a;i<=b;i++)
-// for(auto it : g[i].nb)
-
+#define fr(i,n) for(int i = 0; i<n; i++)
+#define sz(v) (int)(v.size())
+#define prin(a) cout << #a << " = " << a << endl
+#define all(v) (v).begin(),(v).end()
 typedef long long ll;
-typedef long double ld;
-
-#define pb push_back
-
-#define all(a) a.begin(),a.end() 
-
-#define fi first
-#define se second
-typedef pair<int,int> pii;
-typedef pair<ll,ll> pll;
-
-const long double PI = acos(-1.0l);
-const ll MOD = 1e9+7;
-
-//LLONG_MAX
-//-DBL_MAX
-
-bool debug = 1;
-#define printa(a) cout << #a << " = " << (a) << endl
-#define prin(a) if(debug) cout << #a << " = " << (a) << endl
-#define soprin(a) if(debug) cout << (a)
-#define ppal(a)  if(debug) cout << #a << endl
-#define prinsep if(debug) cout << "------" << endl
-#define cendl if(debug) cout << endl
-#define prinpar(p) if(debug) cout << #p << ".fi=" << (p).fi << " " << #p << ".se=" << (p).se << endl
-#define print(tup) if(debug) cout << #tup << " = {" << get(tup,0) << ", " << get(tup,1) << ", " << get(tup,2) << "}\n"
-#define prinv(v) if(debug){ cout << #v << ":" << endl; for(auto it = (v).begin(); it!=(v).end();it++){ cout << *it << " ";} cout << endl;}
 
 const int N = 1e5+10;
 
-vector<int> g[N], ct[N];
-int rootct;
+vector<int> g[N]; //grafo original
+vector<int> ct[N]; //arvore da decomposicao em centroide
+int pai[N]; //pai de cada no na decomposicao em centroide
+int rootct; 
 int subsize[N];
-int jact[N];
+bool jact[N];
 
 int mksubsize(int no, int from){
 	int tam = 1;
@@ -62,32 +34,33 @@ int findc(int no, int from, int tam){
 	return no;
 }
 
+
 void mkct(int root, int from){
 	mksubsize(root,-1);	
 	
 	int cur = findc(root,-1,subsize[root]);
 	
 	if(from==-1) rootct = cur;
-	else{
-		ct[from].pb(cur);
-		ct[cur].pb(from);
-	}
+	else ct[from].push_back(cur);
+	pai[cur] = from;
 	jact[cur] = 1;
 	
 	for(auto &it : g[cur]){
-		if(it==from or jact[it]) continue;
+		if(jact[it]) continue;
 		mkct(it,cur);
 	}
 	return;
 }
+
+//By adapting this code, solves: https://www.spoj.com/problems/QTREE4/
 
 //--------TESTE-----------------------------
 // a partir do grafo ct, faz a matriz mat para visualizar levels da centroid tree
 vector<vector<int>> mat;
 
 void fazmat(int no, int from, int d){
-	if(d==mat.size()) mat.pb(vector<int>(1,no));
-	else mat[d].pb(no);
+	if(d==mat.size()) mat.push_back(vector<int>(1,no));
+	else mat[d].push_back(no);
 	for(auto &it : ct[no]){
 		if(it==from) continue;
 		fazmat(it,no,d+1);
@@ -96,15 +69,14 @@ void fazmat(int no, int from, int d){
 //-----------------------------------------
 
 int main(){
-	//FILE_IN FILE_OUT
 	int n;
 	cin >> n;
 	
 	fr(i,n-1){
 		int u,v;
 		scanf("%d%d", &u, &v);
-		g[u].pb(v);
-		g[v].pb(u);
+		g[u].push_back(v);
+		g[v].push_back(u);
 	}
 	
 	mkct(1,-1);
