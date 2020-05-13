@@ -23,6 +23,7 @@ ll div(ll a, ll b, bool ceil){
 	return ans;
 }
 
+//resolve a*x + b*y == gcd(a,b)
 ll gcd_ext(ll a, ll b, ll &xo, ll &yo){
 	if(b==0){
 		xo = 1, yo = 0;
