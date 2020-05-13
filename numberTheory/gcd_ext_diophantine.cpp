@@ -9,6 +9,11 @@ using namespace std;
 typedef long long ll;
 
 // solves https://codeforces.com/problemsets/acmsguru/problem/99999/106
+/*
+	Resolve problema:
+	Quantidade de soluçoes de a*x+b*y=c para 
+	x1<=x<=x2 e y1<=y<=y2
+*/	
 
 ll div(ll a, ll b, bool ceil){
 	ll ans = abs(a/b);
