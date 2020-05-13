@@ -36,6 +36,8 @@ ll gcd_ext(ll a, ll b, ll &xo, ll &yo){
 	return g;
 }
 
+//Retorna qntdade de solucoes de a*x+b*y = c
+//pode ser modificado para retornar qual a solucao (xo,yo) respeitando algum criterio
 ll qnt_sol(ll a, ll b, ll c, ll xl, ll xr, ll yl, ll yr){
 	ll xo, yo;
 	ll g = gcd_ext(a,b,xo,yo);
