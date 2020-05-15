@@ -1,12 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+//submissao modelo sugerida no codeforces: https://codeforces.com/contest/98/submission/3856625
+// macacario ITA: https://github.com/splucs/Competitive-Programming/blob/master/Macac%C3%A1rio/Math/bignum.cpp (contem erros)
+
 #define fr(i,n) for(int i = 0; i<n; i++)
 #define sz(v) (int)(v.size())
 #define prin(a) cout << #a << " = " << a << endl
 #define all(v) (v).begin(),(v).end()
 
 typedef long long ll;
+
 //mudar base para 1e9 para ser mais eficiente, mas deixar como 10 para testes
 const int base = 10;
 
@@ -16,9 +20,6 @@ void fix(vector<int> &a) {
 		a.pop_back();
 	}
 }
-
-//submissao modelo sugerida no codeforces: https://codeforces.com/contest/98/submission/3856625
-// macacario ITA: https://github.com/splucs/Competitive-Programming/blob/master/Macac%C3%A1rio/Math/bignum.cpp (contem erros)
 
 struct bignum{
 
