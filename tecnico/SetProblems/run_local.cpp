@@ -25,6 +25,13 @@ string file_program_to_check = "chefs/submissions/accepted/sol_ponctualcheffs.cp
 string path_with_data = "chefs/data/sample/";
 string ext_input = ".in", ext_output = ".ans";
 
+/*
+To add extension to all files in a repository, use following script:
+	for f in * ; do 
+	  mv "$f" "$f.in"
+	done
+*/
+
 // ------------------------------------------------------------------------------------
 
 const int N = 1e6+10;
