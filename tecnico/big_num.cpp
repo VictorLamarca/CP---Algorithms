@@ -58,6 +58,8 @@ bool operator ==(const bignum &n2) const{
 	return sign==n2.sign and cmp(a,n2.a)==2;
 }
 
+bignum(){}
+
 bignum(char* s) {
 	a.clear();
 	int inic = 0;
