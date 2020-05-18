@@ -1,18 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//submissao modelo sugerida no codeforces: https://codeforces.com/contest/98/submission/3856625
-// macacario ITA: https://github.com/splucs/Competitive-Programming/blob/master/Macac%C3%A1rio/Math/bignum.cpp (contem erros)
-
 #define fr(i,n) for(int i = 0; i<n; i++)
 #define sz(v) (int)(v.size())
 #define prin(a) cout << #a << " = " << a << endl
 #define all(v) (v).begin(),(v).end()
 
 typedef long long ll;
-
 //mudar base para 1e9 para ser mais eficiente, mas deixar como 10 para testes
-const int base = 10;
+const int base = round(1e9);
 
 //Remover Leading zeros
 void fix(vector<int> &a) {
@@ -20,6 +16,9 @@ void fix(vector<int> &a) {
 		a.pop_back();
 	}
 }
+
+//submissao modelo sugerida no codeforces: https://codeforces.com/contest/98/submission/3856625
+// macacario ITA: https://github.com/splucs/Competitive-Programming/blob/master/Macac%C3%A1rio/Math/bignum.cpp (contem erros)
 
 struct bignum{
 
@@ -30,8 +29,8 @@ void print() {
 	if(sign<0) printf("-");
 	printf("%d", a.empty() ? 0 : a.back());
 	for (int i=(int)sz(a)-2; i>=0; --i) {
-		//printf("%09d", a[i]);
-		printf("%d", a[i]);
+		printf("%09d", a[i]);
+		//printf("%d", a[i]);
 	}
 	puts("");
 }
@@ -142,79 +141,74 @@ bignum operator -(bignum n2){
 	return (*this)+n2;
 }
 
-vector<int> shiftL(const vector<int> &x, int b) {
-	vector<int> c(sz(x)+b);
-	for(int i=sz(c)-1; i>=0; i--) {
-		if(i>=b) c[i] = x[i-b];
-		else c[i] = 0;
-	}
-	fix(c);
-	return c;
-}
-
-vector<int> shiftR(const vector<int>& x, int b) {
-	vector<int> c;
-	if (sz(x) <= b) {
-		c.push_back(0);
-		return c;
-	}
-	c.resize(sz(x) - b);
-	for(int i=0; i<sz(c); i++) {
-		c[i] = x[i+b];
-	}
-	fix(c);
-	return c;
-}
-
-bignum operator*(const bignum &n2) const{
-	vector<int> b = n2.a;
-	int n = sz(a)+sz(b);
+vector<int> multMod(const vector<int> &x, const vector<int> &y) const{
+	int n = sz(x)+sz(y);
 	long long carry = 0, acum;
-	vector<int> c(n);
+	vector<int> z(n);
 	for (int k=0; k<n || carry; k++) {
-		if (k == n) c.push_back(0);
+		if (k == n) z.push_back(0);
 		acum = carry; carry = 0;
-		for (int i=0, j=k; i <= k && i<sz(a); i++, j--) {
-			if (j >= sz(b)) continue;
-			acum += a[i] * 1ll * b[j];
+		for (int i=0, j=k; i <= k && i<sz(x); i++, j--) {
+			if (j >= sz(y)) continue;
+			acum += x[i] * 1ll * y[j];
 			carry += acum / base;
 			acum %= base;
 		}
-		c[k] = acum;
+		z[k] = acum;
 	}
-	fix(c);
-	return bignum(c,sign*n2.sign);
+	fix(z);
+	return z;
 }
 
-void divideMod(vector<int> x, vector<int> y, vector<int> & q, vector<int> & r) {
-	vector<int> z(1,0), p(1,1);
-	q = vector<int>(1,0);
-	while(cmp(y, x)==1) {
-		p = shiftL(p, max(1, sz(x)-sz(y) ) );
-		y = shiftL(y, max(1, sz(x)-sz(y) ) );
+bignum operator*(const bignum &n2) const{
+	vector<int> val = multMod(a,n2.a);
+	return bignum(val,sign*n2.sign);
+}
+
+vector<int> divide2teto(const vector<int> &x){
+	int carry = 0;
+	vector<int> ans(sz(x));
+	for(int i = sz(x)-1; i>=0; i--){
+		int val = x[i];
+		if(carry) val+=base;
+		ans[i] = val/2;
+		carry = val%2;
 	}
-	while(true) {
-		while (cmp(x, y)==1 && cmp(z, p)==1) {
-			p = shiftR(p, 1); 
-			y = shiftR(y, 1);
-		}
-		if (cmp(p,z)) break;
-		x = subtractMod(x, y);
-		q = addMod(q,p);
+	if(carry) ans = addMod(ans,vector<int>(1,1));
+	fix(ans);
+	return ans;
+}	
+
+void divideModBs(const vector<int> &x, const vector<int> &y, vector<int> & q, vector<int> & r){
+	if(cmp(x,y)==1){
+		q = vector<int>(1,0);
+		r = x;
+		return;
 	}
-	fix(q), fix(r);
-	swap(x, r);
+	vector<int> lo = vector<int>(1,0);
+	vector<int> hi = x;
+	
+	while(cmp(lo,hi)==1){
+		vector<int> mid = divide2teto(addMod(lo,hi));
+		vector<int> val = multMod(mid,y);
+		if(cmp(x,val)==1) hi = subtractMod(mid,vector<int>(1,1));
+		else lo = mid;		
+	}
+	q = lo;
+	fix(q);
+	r = subtractMod(x,multMod(lo,y));
+	fix(r);
 }
 
 bignum operator /(const bignum &n2){
 	vector<int> q, r;
-	divideMod(a,n2.a,q,r);
+	divideModBs(a,n2.a,q,r);
 	return bignum(q,sign*n2.sign);
 }
 
 bignum operator %(const bignum &n2){
 	vector<int> q, r;
-	divideMod(a,n2.a,q,r);
+	divideModBs(a,n2.a,q,r);
 	return bignum(r,sign);
 }
 
@@ -225,21 +219,31 @@ ll gera(ll minx, ll maxx){
 	return minx + rand()%(maxx-minx+1);
 }
 
+clock_t ts;
+
+void prin_time(){
+	printf("Time: %2lf\n", (double)(clock()-ts)/CLOCKS_PER_SEC);
+}
+
 int main(){
-	
+	//puts("oi");
 	if(0){
-		bignum a(2), b(10);
-		bignum c = a*b;
-		bool menor = (a<b);
+		bignum a(171), b(39);
+		ts = clock();
+		bignum c = a/b;
+		prin_time();
 		c.print();
 		return 0;
 	}
 	
 	srand(time(0));
+	ts = clock();
 	fr(i,1e5){
 		if(i%1000==0) prin(i);
 		ll maxv = 100000;
 		ll a = gera(-maxv,maxv), b = gera(-maxv,maxv);
+		if(i%2) b = gera(-100,100);
+		if(b==0) b++;
 		bignum big_a(a), big_b(b);
 		
 		//menor
@@ -332,4 +336,5 @@ int main(){
 			}
 		}
 	}
+	prin_time();
 }
