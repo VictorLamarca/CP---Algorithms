@@ -3,27 +3,17 @@
 #include <dirent.h>
 using namespace std;
 
-#define FILE_IN freopen("kotlin.in", "r", stdin);
-#define FILE_OUT freopen("kotlin.out", "w", stdout);
-
 #define fr(i,n) for(int i=0;i<n;i++)
-#define frr(i,a,b) for(int i =a;i<=b;i++)
+#define all(a) a.begin(),a.end() 
+#define prin(a) cout << #a << " = " << (a) << endl
 
 typedef long long ll;
-typedef long double ld;
-
-#define eb emplace_back
-
-#define all(a) a.begin(),a.end() 
-
-bool debug = 1;
-#define prin(a) if(debug) cout << #a << " = " << (a) << endl
 
 // ------------------------------------------------------------------------------------
 
-string file_program_to_check = "chefs/submissions/accepted/sol_ponctualcheffs.cpp";
-string path_with_data = "chefs/data/sample/";
-string ext_input = ".in", ext_output = ".ans";
+string file_program_to_check = "2crt.cpp";
+string path_with_data = "inputf/";
+string ext_input = ".in", ext_output = ".out";
 
 /*
 To add extension to all files in a repository, use following script:
@@ -34,11 +24,7 @@ To add extension to all files in a repository, use following script:
 
 // ------------------------------------------------------------------------------------
 
-const int N = 1e6+10;
-ll t[N], d[N];
 FILE *pfile;
-
-ll n, k;
 
 vector<vector<string>> read_parser(string file_name){
     pfile = fopen(file_name.c_str(),"r");
@@ -50,27 +36,32 @@ vector<vector<string>> read_parser(string file_name){
     
     while(fscanf(pfile,"%c", &c)!=EOF){
         if(c=='\n'){
-            if(word.size()) line.eb(word);
+            if(word.size()) line.emplace_back(word);
             word.clear();
-            if(line.size()) ans.eb(line);
+            if(line.size()) ans.emplace_back(line);
             line.clear();
         } else if(isspace(c)){
-            if(word.size()) line.eb(word);
+            if(word.size()) line.emplace_back(word);
             word.clear();
         } else{
             word += c;
         }
     }
-    if(word.size()) line.eb(word);
+    if(word.size()) line.emplace_back(word);
     word.clear();
-    if(line.size()) ans.eb(line);
+    if(line.size()) ans.emplace_back(line);
     line.clear();
     
     return ans;
 }
 
+clock_t ts;
+
+double get_time(){
+	return (double)(clock()-ts)/CLOCKS_PER_SEC;
+}
+
 int main(){
-    
     
     set<string> s_input, s_output;
     
@@ -101,9 +92,11 @@ int main(){
 	    return 0;
 	}   
 	
-	system(("g++ -std=c++14 -Wshadow -fsanitize=address -D_GLIBCXX_DEBUG -o prog1 " + file_program_to_check).c_str());
+	system(("g++ -std=c++14 -O2 -o prog1 " + file_program_to_check).c_str());
 	
 	cout << "Running " << s_input.size() << " files" << endl;
+	
+	double max_time = 0;
 	
 	for(auto &input_file : s_input){
 	    if(!s_output.count(input_file)){
@@ -112,7 +105,9 @@ int main(){
 	        return 0;
 	    }
 	    
+	    ts = clock();
 	    system(("./prog1 < " + path_with_data + input_file + ext_input + " > a1").c_str());
+	    max_time = max(max_time,get_time());
 	    
 	    vector<vector<string>> ans1 = read_parser("a1"), ans2 = read_parser(path_with_data+input_file+ext_output);
 	    
@@ -123,6 +118,7 @@ int main(){
 	        return 0;
 	    }
 	}
+	prin(max_time);
     
 	return 0;
 }
