@@ -16,7 +16,7 @@ int rootct;
 int subsize[N];
 int jact[N];
 
-vector<vector<pair<int,int>>> dist_part[N];
+vector<vector<pair<int,int>>> dist_part[N]; // dist_part[no_centroide][i] = vetor de pares (distancia somada, distancia em aresta) em relacao ao no_centroide, mas apenas os que estao na subarvore i (em que i eh o iesimo filho direto da centroide tree de root no_centroide, ou seja, faco um agrupamento para distinguir que nos de diferentes i tem lca = no_centroide, e nos de msm i tem lca mais abaixo)
 
 int n, k;
 
@@ -81,7 +81,7 @@ int main(){
 	scanf("%d%d", &n, &k);
 	fr(i,n-1){
 		int a, b, c;
-		scanf("%d%d%d", &a, &b, &c);
+		scanf("%d%d%d", &a, &b, &c); //checar se necessario --a, e --b
 		g[a].emplace_back(b,c);
 		g[b].emplace_back(a,c);
 	}
