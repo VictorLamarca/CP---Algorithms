@@ -17,7 +17,7 @@ void build(int no = 1, int l = 0, int r = N){
     build(2*no+1,mid,r);
     s[no] = max(s[2*no],s[2*no+1]);
 }
-Seg(){
+Seg(){ //build da HLD tem de ser assim, pq chama sem os parametros
 	build();
 }
 void updlazy(int no, int l, int r, ll x){
@@ -91,7 +91,7 @@ template<int N, bool IN_EDGES> struct HLD {
 			tree.upd(l,r+1,val); }); }
 	void modifySubtree(int v, int val) { 
 		tree.upd(pos[v]+IN_EDGES,pos[v]+sz[v],val); }
-	ll queryPath(int u, int v) { 
+	ll queryPath(int u, int v) { //modificacoes geralmente vem aqui (para hld soma)
 		ll res = -LLONG_MAX; processPath(u,v,[this,&res](int l,int r) { 
 			res = max(tree.qry(l,r+1),res); });
 		return res; }
