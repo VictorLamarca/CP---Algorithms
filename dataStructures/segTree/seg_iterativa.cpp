@@ -23,7 +23,8 @@ typedef long long ll;
 */
 
 template<int N> struct Seg{
-	ll *v, *s;
+	//inicializar valores iniciais da seg no range [n,2*n-1]
+	ll *s;
 	
 void build(){
 	for(int i = N-1;i>0;i--){ 
@@ -32,8 +33,7 @@ void build(){
 	}
 }
 
-Seg(ll *vb, ll *sb){
-	v = vb;
+Seg(ll *sb){
 	s = sb;
 	build();
 }
@@ -67,7 +67,6 @@ ll val_can_delete[N];
 ll id_can_delete[N];
 
 ll s[2*N+10];
-ll v[N+10];
 
 int main(){
 	scanf("%lld", &n);
@@ -102,7 +101,7 @@ int main(){
 	}
 	
 	fr(i,m) bestsf[i] = LLONG_MAX;
-	Seg<N> seg(v,s);
+	Seg<N> seg(s);
 	
 	for(int i = n-1; i>=0; i--){
 		int id = valb_to_id[a[i]];
