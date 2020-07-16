@@ -3,9 +3,42 @@ using namespace std;
 
 #define fr(i,n) for(int i = 0; i<n; i++)
 #define sz(v) (int)(v.size())
+#define prin(a) cout << #a << " = " << a << endl
+#define prinv(v) cout << #v << " = "; for(auto it : v) cout << it << ", "; cout << endl
+#define all(v) (v).begin(),(v).end()
 typedef long long ll;
 
-//solves https://judge.yosupo.jp/problem/point_add_range_sum
+#define fi first
+#define se second
+
+const ll MOD = round(1e9)+7;
+
+//solves https://acm.timus.ru/problem.aspx?space=1&num=1989
+
+template <class T>
+T fp(T x, long long e) {
+	T ans(1);
+	for(; e > 0; e /= 2) {
+		if(e & 1) ans = ans * x;
+		x = x * x;
+	}
+	return ans;
+}
+
+template <int mod = MOD>
+struct mb {
+	mb(int v = 0) : val(v < 0 ? v + mod : v) {}
+	int val;
+ 
+	void operator += (mb<mod> o) { *this = *this + o; }
+	void operator -= (mb<mod> o) { *this = *this - o; }
+	void operator *= (mb<mod> o) { *this = *this * o; }
+	bool operator == (mb<mod> o) { return val==o.val; }
+	mb<mod> operator * (mb<mod> o) { return (int)((long long) val * o.val % mod); }
+	mb<mod> operator / (mb<mod> o) { return *this * fp(o, mod - 2); }
+	mb<mod> operator + (mb<mod> o) { return val + o.val >= mod ? val + o.val - mod : val + o.val; }
+	mb<mod> operator - (mb<mod> o) { return val - o.val < 0 ? val - o.val + mod : val - o.val; }
+};
 
 template<class T> struct Seg{
 	int n;
@@ -25,9 +58,9 @@ Seg(vector<T> v){
 	build();
 }
 
-//pos 0-indexed (incrementa, nao atualiza)
-void upd(int pos, ll val){
-	for(s[pos+=n]+=val;pos>1;pos>>=1) 
+//pos 0-indexed (atualiza, nao incrementa)
+void upd(int pos, T val){
+	for(s[pos+=n]=val;pos>1;pos>>=1) 
 		//s[pos>>1] = min(s[pos],s[pos^1]);
 		s[pos>>1] = s[pos]+s[pos^1];
 }
@@ -47,22 +80,48 @@ T qry(int l, int r){
 	
 };
 
+mb<> val[256];
+const int N = 1e5+10;
+mb<> p27[N];
+
 int main(){
 	ios::sync_with_stdio(0); cin.tie(0);
-	int n, q; cin >> n >> q;
-	vector<ll> v(n);
-	fr(i,n) cin >> v[i];
+	srand(time(0));
+	for(int i = 'a'; i<='z'; i++) val[i] = mb<>(i-'a'+1);
+	random_shuffle(val+'a',val+'z'+1);
 	
-	Seg<ll> seg(v);
+	p27[0] = 1;
 	
+	for(int i = 1; i<N; i++) p27[i] = mb<>(27)*p27[i-1];
+		
+	string s;
+	cin >> s;
+	
+	vector<mb<>> vl(sz(s)), vr(sz(s));
+	
+	fr(i,sz(s)){
+		vl[i] = val[s[i]]*p27[i];
+	}
+	
+	for(int i = sz(s)-1; i>=0; i--){
+		vr[i] = val[s[i]]*p27[sz(s)-1-i];
+	}
+	
+	Seg<mb<>> segl(vl), segr(vr);
+	
+	int q; cin >> q;
 	fr(qq,q){
-		int tipo; cin >> tipo;
-		if(tipo==0){
-			ll i, x; cin >> i >> x;
-			seg.upd(i,x);
+		string tipo; cin >> tipo;
+		if(tipo[0]=='p'){ //qry
+			int l, r; cin >> l >> r; l--;
+			int tam = r-l;
+			if(tam==1 or segl.qry(l,l+tam/2)/p27[l]==segr.qry(r-tam/2,r)/p27[sz(s)-r]) cout << "Yes\n";
+			else cout << "No\n";
 		} else{
-			int l, r; cin >> l >> r;
-			cout << seg.qry(l,r) << "\n";
+			int i; char c; cin >> i >> c; i--;
+			s[i] = c;
+			segl.upd(i,val[c]*p27[i]);
+			segr.upd(i,val[c]*p27[sz(s)-1-i]);
 		}
 	}
 }
