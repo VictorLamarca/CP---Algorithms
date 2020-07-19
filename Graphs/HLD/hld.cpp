@@ -77,7 +77,7 @@ template<int N, bool IN_EDGES> struct HLD {
 	void init() {
 		root[0] = d[0] = t = 0; pai[0] = -1;
 		dfsSz(); dfsHld(); }
-	Seg<N> tree;
+	Seg<N> tree; //lembrar de ter build da seg sem nada
 	template <class Op>
 	void processPath(int u, int v, Op op) {
 		for (; root[u] != root[v]; v = pai[root[v]]) {
@@ -91,6 +91,9 @@ template<int N, bool IN_EDGES> struct HLD {
 			tree.upd(l,r+1,val); }); }
 	void modifySubtree(int v, int val) { 
 		tree.upd(pos[v]+IN_EDGES,pos[v]+sz[v],val); }
+	ll querySubtree(int v){
+		return tree.qry(pos[v]+IN_EDGES,pos[v]+sz[v]);
+	}
 	ll queryPath(int u, int v) { //modificacoes geralmente vem aqui (para hld soma)
 		ll res = -LLONG_MAX; processPath(u,v,[this,&res](int l,int r) { 
 			res = max(tree.qry(l,r+1),res); });
