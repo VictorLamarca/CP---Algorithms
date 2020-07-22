@@ -1,14 +1,14 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
 #define fr(i,n) for(int i = 0; i<n; i++)
+#define sz(v) (int)(v.size())
 #define all(v) (v).begin(),(v).end()
-#define eb emplace_back
-#define prin(a) cout << #a << " = " << a << endl;
 typedef long long ll;
 
-const int MAXV = 1002; // maximo numero de vertices
+//solves https://acm.timus.ru/problem.aspx?space=1&num=1774
+
+const int MAXV = 3e3+10; // maximo numero de vertices
 const int FINF = INT_MAX; // infinite flow
 
 struct Edge {
@@ -77,7 +77,7 @@ int dinic_dfs(int v, int _t, int flow)
 
 int dinic(int _s, int _t)
 {
-	eo = edge;
+	eo = edge; // qnd for fazer o fluxo, guardar como eram as capacidades originais (na vdd isto eh o grafo residual - quanto tem disponivel pra ir de fluxo) para poder recuperar a resposta
     int ret = 0, got;
     while (dinic_bfs(_s, _t)) {
         memset(ptr, 0, sizeof(ptr));
@@ -97,93 +97,59 @@ inline void dinic_clear(int n_vertices)
 
 typedef tuple<int,int,int> tii;
 
-//recupera resposta do fluxo do dinic
-//returna u,v,c quanto de fluxo passa de u pra v
+/* rec_ans recupera resposta do fluxo do dinic
+   returna tupla (u,v,c) quanto de fluxo (c) passa de u pra v (direcionado)
+   (nao adiciona aresta se nao passa nd de fluxo nela)
+   
+   Lembrar de por em resposta apenas os vertices necessarios
+   (geralmente tenho o source e sink a mais por exemplo)
+*/
 vector<tii> rec_ans(int n_vertices){
 	vector<tii> ans;
 	fr(i,n_vertices){
 		for(auto &ide : adj[i]){
 			if(eo[ide].cap>edge[ide].cap){
-				ans.eb(i,edge[ide].to,eo[ide].cap-edge[ide].cap);
+				ans.emplace_back(i,edge[ide].to,eo[ide].cap-edge[ide].cap);
 			}
 		}
 	}
 	return ans;
 }
 
-//solves from http://opentrains.snarknews.info
-//contest 10411 problem c
+int T = round(2e3);
 
-int n, m;
-
-#define fi first
-#define se second
-typedef pair<int,int> pii;
-
-vector<int> g[MAXV];
-vector<pii> e;
-int main(){	
-	
-	cin >> n >> m;
-	
-	fr(i,m){
-		int u, v;
-		scanf("%d%d", &u, &v);
-		u--,v--;
-		e.eb(u,v);
-		g[u].eb(v);
-		g[v].eb(u);
-	}
-	
-	fr(cand_tl,n){
-		vector<int> nb(n,0);
-		int n_nb = 0;
-		for(auto &it : g[cand_tl]){ 
-			nb[it] = 1;
-			n_nb++;
-			add_edge(it,cand_tl,1);
+int main(){
+	ios::sync_with_stdio(0); cin.tie(0);
+	int n, k; cin >> n >> k;
+	fr(i,n){
+		int ti, duracao; cin >> ti >> duracao;
+		for(int t = ti; t<ti+duracao; t++){
+			add_edge(i,n+t,1);
 		}
-		for(auto &par : e){
-			int u, v;
-			tie(u,v) = par;
-			if(u==cand_tl or v==cand_tl) continue;
-			if(nb[u]>nb[v]) swap(u,v);
-			if(nb[u] or !nb[v]) continue;
-			add_edge(u,v,1);
+	}
+	fr(i,n) add_edge(n+T,i,2);
+	for(int t = n;t<n+T;t++) add_edge(t,n+T+1,k);
+	
+	if(dinic(n+T,n+T+1)==2*n){
+		vector<tii> ans = rec_ans(n+T+2);
+		cout << "Yes\n";
+		vector<vector<int>> temp(n);
+		for(auto &tup : ans){
+			int u, v, c; tie(u,v,c) = tup;
+			
+			if(u<n){
+				temp[u].push_back(v-n);
+			}
 		}
 		fr(i,n){
-			if(!nb[i] and i!=cand_tl) add_edge(n,i,1);
+			assert(sz(temp[i])==2);
+			fr(j,2){
+				if(j) cout << " ";
+				cout << temp[i][j];
+			}
+			cout << "\n";
 		}
-		int n_not_nb = n-1-n_nb;
-		if(dinic(n,cand_tl)==n_not_nb){
-			puts("Yes");
-			
-			vector<tii> ans = rec_ans(n);
-			vector<int> mark(n);
-			mark[cand_tl] = 1;
-			vector<pii> vans;
-			for(auto &tup : ans){
-				int u, v, c;
-				tie(u,v,c) = tup;
-				if(u!=n and v!=cand_tl and c){
-					vans.eb(u+1,v+1);
-					mark[u] = 1;
-					mark[v] = 1;
-				}
-			}
-			fr(i,n) if(!mark[i]){
-				assert(nb[i] ==1);
-				vans.eb(i+1,-1);
-			}
-			printf("%d %d\n", cand_tl+1, (int)vans.size());
-			for(auto &par : vans){
-				int u, v;
-				tie(u,v) = par;
-				printf("%d %d\n", u,v);
-			}
-			return 0;
-		}
-		dinic_clear(n+1);
+	} else{
+		cout << "No\n";
 	}
-	puts("No");
 }
