@@ -31,7 +31,7 @@ struct mb {
 	void operator -= (mb<mod> o) { *this = *this - o; }
 	void operator *= (mb<mod> o) { *this = *this * o; }
 	mb<mod> operator * (mb<mod> o) { return (int)((long long) val * o.val % mod); }
-	//mb<mod> operator / (mb<mod> o) { return *this * fexp(o, mod - 2); }
+	//mb<mod> operator / (mb<mod> o) { return *this * fp(o, mod - 2); }
 	//bool operator == (mb<mod> o) { return val==o.val; } //usar soh para hashes
 	mb<mod> operator + (mb<mod> o) { return val + o.val >= mod ? val + o.val - mod : val + o.val; }
 	mb<mod> operator - (mb<mod> o) { return val - o.val < 0 ? val - o.val + mod : val - o.val; }
