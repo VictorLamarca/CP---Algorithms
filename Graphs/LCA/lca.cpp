@@ -72,6 +72,12 @@ int lca(int p, int q){
 }	
 
 /*
+int dist(int u, int v){
+	return L[u]+L[v]-2*L[lca(u,v)];
+}
+*/
+
+/*
     Solves problem:
     https://codeforces.com/contest/832/problem/D
 */

@@ -4,12 +4,16 @@ using namespace std;
 typedef long long ll;
 
 void printa(__int128 x){
-    assert(x>0);
+    if(x<0){
+    	printf("-");
+    	printa(-x);
+    	return;
+    }
     const ll maxval = 1e18l;
     ll a = x/maxval;
     ll b = x%maxval;
-    if(a) printf("%lld%018lld\n", a, b);
-    else printf("%lld\n", b);
+    if(a) printf("%lld%018lld", a, b);
+    else printf("%lld", b);
 }
 
 int main(){
