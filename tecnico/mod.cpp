@@ -25,6 +25,7 @@ T fp(T x, long long e) {
 template <int mod = MOD>
 struct mb {
 	mb(int v = 0) : val(v < 0 ? v + mod : v) {}
+	mb(ll v){ val = (v%mod+mod)%mod; }
 	int val;
  
 	void operator += (mb<mod> o) { *this = *this + o; }
@@ -36,6 +37,25 @@ struct mb {
 	mb<mod> operator + (mb<mod> o) { return val + o.val >= mod ? val + o.val - mod : val + o.val; }
 	mb<mod> operator - (mb<mod> o) { return val - o.val < 0 ? val - o.val + mod : val - o.val; }
 };
+
+/*
+//mod com double - usar para debugar para ver se valor faz sentido
+
+template <int mod = MOD>
+struct mb {
+	mb(double v = 0) : val(v) {}
+	double val;
+ 
+	void operator += (mb<mod> o) { *this = *this + o; }
+	void operator -= (mb<mod> o) { *this = *this - o; }
+	void operator *= (mb<mod> o) { *this = *this * o; }
+	mb<mod> operator * (mb<mod> o) { return val * o.val; }
+	//mb<mod> operator / (mb<mod> o) { return val/o.val; }
+	//bool operator == (mb<mod> o) { return val==o.val; }
+	mb<mod> operator + (mb<mod> o) { return val + o.val; }
+	mb<mod> operator - (mb<mod> o) { return val - o.val; }
+};
+//*/
 
 //solves https://acm.timus.ru/problem.aspx?space=1&num=2030
 
