@@ -2,6 +2,7 @@
 using namespace std;
 
 #define fr(i,n) for(int i = 0; i<n; i++)
+#define sz(v) (int)(v.size())
 typedef long long ll;
 
 //solves problem E from: https://codeforces.com/gym/100625/standings/friends/true
@@ -27,8 +28,9 @@ mynum mult(mynum a, mynum b){
 }
 
 vector<vector<mynum>> mm(vector<vector<mynum>> a, vector<vector<mynum>> b){
-	int l = a.size();
-	int c = b[0].size();
+	int l = sz(a);
+	int c = sz(b[0]);
+	assert(sz(a[0])==sz(b));
 	
 	vector<vector<mynum>> ans(l,vector<mynum>(c));
 	

@@ -2,6 +2,7 @@
 using namespace std;
 
 #define fr(i,n) for(int i=0;i<n;i++)
+#define sz(v) (int)(v.size())
 typedef long long ll;
 #define eb emplace_back
 
@@ -14,9 +15,9 @@ const ll MOD = 1e9+7;
     para matriz n x n complexidade n^3
 */
 vector<vector<ll>> mm(vector<vector<ll>> a, vector<vector<ll>> b){
-
-    int l = a.size();
-	int c = b[0].size();
+    int l = sz(a);
+	int c = sz(b[0]);
+	assert(sz(a[0])==sz(b));
 	
 	vector<vector<ll>> ans(l,vector<ll>(c));
 	
