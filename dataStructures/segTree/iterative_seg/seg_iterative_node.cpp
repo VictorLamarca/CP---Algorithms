@@ -44,6 +44,8 @@ node oper(node a, node b){
 struct Seg{
 	int n;
 	vector<node> s;
+
+Seg(){}
 	
 void build(){
 	for(int i = n-1;i>0;i--){ 
@@ -96,6 +98,8 @@ int main(){
 	
 	//???????? - pq preciso por node() no inicializador?
 	Seg seg(vector<node>(n,node()));
+	//ou tmbm valido pondo mais parenteses:
+	//Seg seg((vector<node>(n)));
 	
 	ll maxd = 0, sno;
 	
