@@ -1,0 +1,1 @@
+g++ -std=c++14 -Wshadow -fsanitize=address -D_GLIBCXX_DEBUG $1 && ./a.out
