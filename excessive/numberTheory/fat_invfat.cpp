@@ -26,6 +26,7 @@ T fp(T x, long long e) {
 template <int mod = MOD>
 struct mb {
 	mb(int v = 0) : val(v < 0 ? v + mod : v) {}
+	mb(ll v){ val = (v%mod+mod)%mod; }
 	int val;
  
 	void operator += (mb<mod> o) { *this = *this + o; }
@@ -51,7 +52,7 @@ int main(){
 	fat[0] = invfat[0] = mb<>(1);
 	for(int i = 1; i<N; i++){
 		fat[i] = mb<>(i)*fat[i-1];
-		invfat[i] = fp(fat[i],MOD-2);
+		invfat[i] = mb<>(1)/fat[i]; //fp(fat[i],MOD-2);
 	}
 	
 	prin(nck(5,2).val);

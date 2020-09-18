@@ -26,6 +26,7 @@ T fp(T x, long long e) {
 template <int mod = MOD>
 struct mb {
 	mb(int v = 0) : val(v < 0 ? v + mod : v) {}
+	mb(ll v){ val = (v%mod+mod)%mod; }
 	int val;
  
 	void operator += (mb<mod> o) { *this = *this + o; }
