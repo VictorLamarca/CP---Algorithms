@@ -10,8 +10,6 @@ typedef long long ll;
 #define fi first
 #define se second
 
-const ll MOD = round(1e9)+7;
-
 template <class T>
 T fp(T x, long long e) {
 	T ans(1);
@@ -22,38 +20,37 @@ T fp(T x, long long e) {
 	return ans;
 }
 
-template <int mod = MOD>
+const ll mod = round(1e9)+7;
 struct mb {
 	mb(int v = 0) : val(v < 0 ? v + mod : v) {}
 	mb(ll v){ val = (v%mod+mod)%mod; }
 	int val;
  
-	void operator += (mb<mod> o) { *this = *this + o; }
-	void operator -= (mb<mod> o) { *this = *this - o; }
-	void operator *= (mb<mod> o) { *this = *this * o; }
-	mb<mod> operator * (mb<mod> o) { return (int)((long long) val * o.val % mod); }
-	//mb<mod> operator / (mb<mod> o) { return *this * fp(o, mod - 2); }
-	//bool operator == (mb<mod> o) { return val==o.val; } //usar soh para hashes
-	mb<mod> operator + (mb<mod> o) { return val + o.val >= mod ? val + o.val - mod : val + o.val; }
-	mb<mod> operator - (mb<mod> o) { return val - o.val < 0 ? val - o.val + mod : val - o.val; }
+	void operator += (mb o) { *this = *this + o; }
+	void operator -= (mb o) { *this = *this - o; }
+	void operator *= (mb o) { *this = *this * o; }
+	mb operator * (mb o) { return (int)((long long) val * o.val % mod); }
+	//mb operator / (mb o) { return *this * fp(o, mod - 2); }
+	//bool operator == (mb o) { return val==o.val; } //usar soh para hashes
+	mb operator + (mb o) { return val + o.val >= mod ? val + o.val - mod : val + o.val; }
+	mb operator - (mb o) { return val - o.val < 0 ? val - o.val + mod : val - o.val; }
 };
 
 /*
 //mod com double - usar para debugar para ver se valor faz sentido
 
-template <int mod = MOD>
 struct mb {
 	mb(double v = 0) : val(v) {}
 	double val;
  
-	void operator += (mb<mod> o) { *this = *this + o; }
-	void operator -= (mb<mod> o) { *this = *this - o; }
-	void operator *= (mb<mod> o) { *this = *this * o; }
-	mb<mod> operator * (mb<mod> o) { return val * o.val; }
-	//mb<mod> operator / (mb<mod> o) { return val/o.val; }
-	//bool operator == (mb<mod> o) { return val==o.val; }
-	mb<mod> operator + (mb<mod> o) { return val + o.val; }
-	mb<mod> operator - (mb<mod> o) { return val - o.val; }
+	void operator += (mb o) { *this = *this + o; }
+	void operator -= (mb o) { *this = *this - o; }
+	void operator *= (mb o) { *this = *this * o; }
+	mb operator * (mb o) { return val * o.val; }
+	//mb operator / (mb o) { return val/o.val; }
+	//bool operator == (mb o) { return val==o.val; }
+	mb operator + (mb o) { return val + o.val; }
+	mb operator - (mb o) { return val - o.val; }
 };
 //*/
 
@@ -64,14 +61,14 @@ vector<int> g[N];
 vector<int> viz_big[N];
 int is_big[N];
 
-mb<> val[N];
-mb<> inc[N];
+mb val[N];
+mb inc[N];
 
 int n;
 int r;
 
-mb<> get_val(int no){
-	mb<> ans = val[no];
+mb get_val(int no){
+	mb ans = val[no];
 	if(!is_big[no]){
 		for(auto &it : viz_big[no]) ans+=inc[it];
 	}
@@ -107,7 +104,7 @@ int main(){
 		
 		if(tipo==1){
 			if(!is_big[no]){
-				mb<> cur_val = get_val(no);
+				mb cur_val = get_val(no);
 				for(auto &it : g[no]){
 					val[it] += cur_val;
 				}

@@ -11,8 +11,6 @@ typedef long long ll;
 #define fi first
 #define se second
 
-const ll MOD = round(1e9)+7;
-
 template <class T>
 T fp(T x, long long e) {
 	T ans(1);
@@ -23,27 +21,27 @@ T fp(T x, long long e) {
 	return ans;
 }
 
-template <int mod = MOD>
+const ll mod = round(1e9)+7;
 struct mb {
 	mb(int v = 0) : val(v < 0 ? v + mod : v) {}
 	mb(ll v){ val = (v%mod+mod)%mod; }
 	int val;
  
-	void operator += (mb<mod> o) { *this = *this + o; }
-	void operator -= (mb<mod> o) { *this = *this - o; }
-	void operator *= (mb<mod> o) { *this = *this * o; }
-	mb<mod> operator * (mb<mod> o) { return (int)((long long) val * o.val % mod); }
-	//mb<mod> operator / (mb<mod> o) { return *this * fp(o, mod - 2); }
-	//bool operator == (mb<mod> o) { return val==o.val; } //usar soh para hashes
-	mb<mod> operator + (mb<mod> o) { return val + o.val >= mod ? val + o.val - mod : val + o.val; }
-	mb<mod> operator - (mb<mod> o) { return val - o.val < 0 ? val - o.val + mod : val - o.val; }
+	void operator += (mb o) { *this = *this + o; }
+	void operator -= (mb o) { *this = *this - o; }
+	void operator *= (mb o) { *this = *this * o; }
+	mb operator * (mb o) { return (int)((long long) val * o.val % mod); }
+	mb operator / (mb o) { return *this * fp(o, mod - 2); }
+	//bool operator == (mb o) { return val==o.val; } //usar soh para hashes
+	mb operator + (mb o) { return val + o.val >= mod ? val + o.val - mod : val + o.val; }
+	mb operator - (mb o) { return val - o.val < 0 ? val - o.val + mod : val - o.val; }
 };
 
 const int N = 1e3+10;
-mb<> nck[N][N];
+mb nck[N][N];
 
 int main(){
-	nck[0][0] = mb<>(1);
+	nck[0][0] = 1;
 	for(int i = 1; i<N; i++){
 		fr(j,i+1){
 			nck[i][j] = nck[i-1][j];
