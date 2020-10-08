@@ -43,6 +43,7 @@ int get_most_dist(int no, ll d[]){
 	return no_max_dist;
 }
 
+//retorna diametro em numero de arestas! (ou seja, vertices -1)
 ll find_diametro(vector<int> _g[N], int _n, ll vd[2][N]){
 	g = _g;
 	n = _n;
