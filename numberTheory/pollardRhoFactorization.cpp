@@ -13,6 +13,8 @@ ll grand(){
 		ans <<=15;
 		ans += rand()%(1<<15);
 	}
+	ans<<=3;
+	ans+=rand()%(1<<3);
 	return ans;
 }
 

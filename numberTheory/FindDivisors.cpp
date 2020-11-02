@@ -1,44 +1,23 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define FILE_IN freopen("little.in", "r", stdin);
-#define FILE_OUT freopen("little.out", "w", stdout);
-
-#define fr(i,n) for(int i=0;i<n;i++)
-#define frr(i,a,b) for(int i =a;i<=b;i++)
-// for(auto it : g[i].nb)
+#define fr(i,n) for(int i = 0; i<n; i++)
+#define sz(v) (int)(v.size())
+#define prin(a) cout << #a << " = " << a << endl
+#define prinv(v) cout << #v << " = "; for(auto it : v) cout << it << ", "; cout << endl
+#define all(v) (v).begin(),(v).end()
 
 typedef long long ll;
-typedef long double ld;
 
-#define pb push_back
-
-#define all(a) a.begin(),a.end() 
+#define rmin(a,b) a = min<ll>(a,b)
+#define rmax(a,b) a = max<ll>(a,b)
 
 #define fi first
 #define se second
-typedef pair<int,int> pii;
+
+//solves problem L from: https://codeforces.com/gym/101612/standings/friends/true
+
 typedef pair<ll,ll> pll;
-
-#define PI acos(-1)
-ll MOD = 1e9+7;
-
-//LONG_LONG_MAX
-//-DBL_MAX
-
-bool debug = 1;
-#define printa(a) cout << #a << " = " << (a) << endl
-#define prin(a) if(debug) cout << #a << " = " << (a) << endl
-#define soprin(a) if(debug) cout << (a)
-#define ppal(a)  if(debug) cout << #a << endl
-#define prinsep if(debug) cout << "------" << endl
-#define cendl if(debug) cout << endl
-#define prinpar(p) if(debug) cout << #p << ".fi=" << p.fi << " " << #p << ".se=" << p.se << endl
-#define prinv(v) if(debug){ cout << #v << ":" << endl; for(auto it = (v).begin(); it!=(v).end();it++){ cout << *it << " ";} cout << endl;}
-
-#define mt make_tuple
-#define get(a,id) get<id>(a)
-#define t3ll tuple<ll,ll,ll>
 
 const int N = 1e5+10;
 
@@ -47,20 +26,23 @@ vector<pll> vcur;
 map<ll,int> prime_factors;
 vector<pll> v_prime_factors;
 
-#define rm (rand()%MOD)
-#define rm2 (rm*rm)%(MOD+2)
-
-ll gcd(ll a,ll b){
-	if(b>a) swap(a,b);
-	if(b==0) return a;
-	return gcd(b,a%b);
+void reset_find_divisores(){
+	divisores = vector<ll>(1,1);
+	vcur.clear();
+	prime_factors.clear();
+	v_prime_factors.clear();
 }
 
+//rand gera por garantia pelo menos de [0,2^15-1]
 ll grand(){
-	ll a = rm2;
-	a<<=32;
-	a+=rm2;
-	return a;
+	ll ans = 0;
+	fr(i,4){
+		ans <<=15;
+		ans += rand()%(1<<15);
+	}
+	ans<<=3;
+	ans+=rand()%(1<<3);
+	return ans;
 }
 
 ll mulmod(ll a, ll b, ll mod){
@@ -79,6 +61,7 @@ ll exp_mod(ll a, ll x, ll m) {
     return res;
 }
 
+//Rabin Miller
 bool ispp(ll n){
 	if(n<=1) return 0;
 	if(n<=3) return 1;
@@ -87,7 +70,6 @@ bool ispp(ll n){
 		d/=2;
 		s++;
 	}
-	
 	fr(k,64){
 		ll a = (grand()%(n-3))+2;
 		ll x = exp_mod(a,d,n);
@@ -100,7 +82,6 @@ bool ispp(ll n){
 			if(x!=n-1) return 0;
 		}
 	}
-	
 	return 1;
 }
 
@@ -113,12 +94,10 @@ ll rho(ll n){
 		x = (mulmod(x,x,n)+c)%n;
 		xx = (mulmod(xx,xx,n)+c)%n;
 		xx = (mulmod(xx,xx,n)+c)%n;
-		d = gcd(abs(x-xx),n);
+		d = __gcd(abs(x-xx),n);
 	} while(d==1);
 	return d;
 }
-
-
 
 void factor(ll n){
 	if(n==1) return;
@@ -132,65 +111,101 @@ void factor(ll n){
 	return;
 }
 
-
-
 void go(ll cur, ll id){
-	if(id==vcur.size()){
-		divisores.pb(cur);
+	if(id==sz(vcur)){
+		divisores.push_back(cur);
 		return;
 	}
-	
 	ll val  = vcur[id].fi;
 	ll numF = vcur[id].se;
-	
 	ll aux = 1;
-	frr(i,1,numF){
+	for(int i = 1; i<=numF; i++){
 		aux*=val;
 		go(cur*aux,id+1);
 	}
-	
-	return;
-	
 }
 
 void find_divisores(ll x){
-
 	factor(x);
-	
 	for(auto it : prime_factors){
-		v_prime_factors.pb(it);
+		v_prime_factors.push_back(it);
 	}
-	
 	int np = v_prime_factors.size();
-	
-	frr(mask,1,(1<<np)-1){
+	for(int mask = 1; mask<(1<<np); mask++){
 		vcur.clear();
-		
 		fr(i,np){
 			if(mask&(1<<i)){
-				vcur.pb(v_prime_factors[i]);
+				vcur.push_back(v_prime_factors[i]);
 			}
-		}
-		
+		}	
 		go(1,0);
 	}
-	
 	sort(all(divisores));
-	
 	divisores.resize(unique(all(divisores))-divisores.begin());
-	
-	return;
 }
 
 int main(){
-	//FILE_IN FILE_OUT
+	#ifdef ONLINE_JUDGE
+	freopen("little.in", "r", stdin);
+	freopen("little.out", "w", stdout);
+	#endif // ONLINE_JUDGE
+
+	ios::sync_with_stdio(0); cin.tie(0);	
+	ll n;
+	cin >> n;
 	
-	ll x;
-	cin >> x;
+	find_divisores(n);
 	
-	find_divisores(x);
+	//prinv(divisores);
 	
-	prinv(divisores);
+	//The code below is specific to the problem
+	//-------------------------------------------
 	
-	return 0;
+	if(n==1 or (sz(prime_factors)==1 and prime_factors.begin()->fi==2)){
+		cout << -1 << "\n";
+		return 0;
+	}
+	vector<vector<ll>> ans(1,vector<ll>(1,n));
+	fr(i,sz(divisores)-1){
+		if(divisores[i]==1) continue;
+		{
+			ll cur = 1;
+			int f1 = 0;
+			while(divisores[i]<LLONG_MAX/cur and n%(cur*divisores[i])==0){
+				f1++;
+				cur*=divisores[i];
+			}
+			if(cur==n){
+				ans.emplace_back();
+				fr(cnt,f1) ans.back().emplace_back(divisores[i]);
+			}
+		}
+		if(divisores[i]+1==divisores[i+1]){
+			ll cur = 1;
+			int f1 = 0, f2 = 0;
+			while(divisores[i]<LLONG_MAX/cur and n%(cur*divisores[i])==0){
+				f1++;
+				cur*=divisores[i];
+			}
+			while(divisores[i+1]<LLONG_MAX/cur and n%(cur*divisores[i+1])==0){
+				f2++;
+				cur*=divisores[i+1];
+			}
+			if(cur==n){
+				ans.emplace_back();
+				fr(cnt,f1) ans.back().emplace_back(divisores[i]);
+				fr(cnt,f2) ans.back().emplace_back(divisores[i+1]);
+			}
+		}
+	}
+	
+	cout << sz(ans) << "\n";
+	for(auto &v : ans){
+		cout << sz(v) << " ";
+		fr(i,sz(v)){
+			if(i) cout << " ";
+			cout << v[i];
+		}
+		cout << "\n";
+	}
 }
