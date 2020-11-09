@@ -86,18 +86,26 @@ template<int N, bool IN_EDGES> struct HLD {
 		if (d[u] > d[v]) swap(u, v);
 		op(pos[u]+IN_EDGES, pos[v]); 
 	}
-	void modifyPath(int u, int v, int val) { 
-		processPath(u,v,[this, &val](int l,int r) { 
-			tree.upd(l,r+1,val); }); }
+	
+	/*
+	void changeNode(int v, node val){
+		tree.upd(pos[v],val);
+	}*/
 	void modifySubtree(int v, int val) { 
-		tree.upd(pos[v]+IN_EDGES,pos[v]+sz[v],val); }
+		tree.upd(pos[v]+IN_EDGES,pos[v]+sz[v],val); 
+	}
 	ll querySubtree(int v){
 		return tree.qry(pos[v]+IN_EDGES,pos[v]+sz[v]);
+	}
+	void modifyPath(int u, int v, int val) { 
+		processPath(u,v,[this, &val](int l,int r) { 
+			tree.upd(l,r+1,val); }); 
 	}
 	ll queryPath(int u, int v) { //modificacoes geralmente vem aqui (para hld soma)
 		ll res = -LLONG_MAX; processPath(u,v,[this,&res](int l,int r) { 
 			res = max(tree.qry(l,r+1),res); });
-		return res; }
+		return res; 
+	}
 };
 
 //solves https://www.hackerrank.com/challenges/subtrees-and-paths/problem
