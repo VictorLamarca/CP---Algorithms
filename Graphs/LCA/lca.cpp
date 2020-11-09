@@ -27,11 +27,10 @@ void dfs(int no, int from, int dac){
 	}
 }
 
-void make(vector<int> _g[N], int _n){
+void make(vector<int> _g[N], int _n, int root){
 	g = _g;
 	n = _n;
 
-	int root = 0;
 	pai[root] = -1;
 	dfs(root,-1,0);
 	
@@ -52,26 +51,34 @@ void make(vector<int> _g[N], int _n){
 
 int lca(int p, int q){
 	if(dist[p]<dist[q]) swap(p,q);
-	
 	for(int i = nlog; i>=0;i--){
 		if(dist[p]-dist[q] >= (1<<i) ) p = st[p][i];	
 	}
-	
 	if(p==q) return p;
-	
 	for(int i = nlog; i>=0; i--){
 		if(st[p][i]!=st[q][i]){
 			p = st[p][i];
 			q = st[q][i];
 		}
 	}
-	
 	return pai[q];
 }	
 
 int get_dist(int u, int v){
 	return dist[u]+dist[v]-2*dist[lca(u,v)];
 }
+
+/*
+//pega ancestor mais acima de v cujo tempo>=tt
+//começando da raiz é crescente
+int get_anc(int v, int tt){
+	assert(tempo[v]>=tt);
+	for(int i = nlog; i>=0;i--){
+		if(st[v][i]!=-1 and tempo[st[v][i]]>=tt) v = st[v][i];
+	}
+	return v;
+}
+*/
 
 };
 
@@ -87,7 +94,7 @@ int main(){
 		g[i+1].push_back(id_pai);
 	}	
 	
-	lca_space::make(g,n);
+	lca_space::make(g,n,0);
 	
 	fr(qq,q){
 		int a, b; cin >> a >> b;
