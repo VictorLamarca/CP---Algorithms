@@ -2,12 +2,9 @@
 using namespace std;
 
 #define fr(i,n) for(int i = 0; i<n; i++)
-#define sz(v) (int)(v.size())
-#define prin(a) cout << #a << " = " << a << endl
 #define all(v) (v).begin(),(v).end()
-typedef long long ll;
 
-const int N = 1e7+10;
+const int N = 1e6+10;
 vector<int> g[N];
 
 //directed graph
@@ -69,40 +66,22 @@ bool go_find(int n){
 
 };
 
-/*
-	Not tested
-	
-	But works in this test case from here https://practice.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1
-	
-	Not submitted because requires to write a funcion
-	
-3
-2 2
-0 1 0 0
-4 3
-0 1 1 2 2 3
-4 3
-0 1 2 3 3 2
-	
-	https://practice.geeksforgeeks.org/problems/detect-cycle-in-a-directed-graph/1
-*/
+//tested in https://codeforces.com/contest/1476/submission/105919213
 
+#define prinv(v) cout << #v << " = "; for(auto &it : v) cout << it << ","; cout << endl;
 
 int main(){
-	int t; scanf("%d", &t);
-	
-	fr(tt,t){
-		int n, m; scanf("%d%d", &n, &m);
-		
-		fr(i,m){
-			int a, b; scanf("%d%d", &a, &b);
-			g[a].push_back(b);
-		}
-		
-		if(find_cycle::go_find(n)){
-			puts("1");
-		} else puts("0");
-		
-		find_cycle::reset(n);
+	g[0].push_back(2);
+	g[2].push_back(1);
+	g[1].push_back(3);
+	g[3].push_back(2);
+	if(find_cycle::go_find(4)){
+		prinv(find_cycle::nodes_in_cycle);
+	}
+	find_cycle::reset(4);
+	g[0].push_back(1);
+	g[2].push_back(1);
+	if(find_cycle::go_find(4)){
+		prinv(find_cycle::nodes_in_cycle);
 	}
 }
