@@ -10,7 +10,8 @@ typedef long long ll;
 	Seg com lazy generica
 		-Um lazy marcado (nao nulo) significa que o nó atual foi atualizado,
 		mas seus filhos ainda nao
-		-No geral mudar
+		-Para querys e updts: intervalos abertos [l,r) 0-indexados
+		-Para adaptar, geralmente mudar:
 			-Parametros do node
 			-Valor default (nulo)
 			-Oper
@@ -91,6 +92,38 @@ node qry(int lq, int rq, int no = 1){
     pass(no);
     return oper(qry(lq,rq,2*no), qry(lq,rq,2*no+1));
 }
+
+/*
+//Funcoes auxiliares a seg de MAXIMO
+//testado em quora: https://jonathanirvin.gs/files/division2_3d16774b0423.pdf
+	
+//retorna par (tem,i), tem==true se tem alguem maior q x no range,
+//e i o maior indice (mais a direita) dentro do intervalo
+//que seja tq v[i]>x (x da query)
+pair<bool,int> get_bigger_right(int lq, int rq, ll x, int no = 1){
+    if(rq<=s[no].l or s[no].r<=lq) return {0,-1};
+    if(s[no].val<=x) return {0,-1};
+    if(s[no].l+1==s[no].r) return {1,s[no].l};
+    pass(no);
+    pair<bool,int> ans = get_bigger_right(lq,rq,x,2*no+1);
+    if(ans.fi) return ans;
+    ans = get_bigger_right(lq,rq,x,2*no);
+    if(ans.fi) return ans;
+    return {0,-1}; //acho q nao precisa desse ultimo return
+}
+
+pair<bool,int> get_bigger_left(int lq, int rq, ll x, int no = 1){
+    if(rq<=s[no].l or s[no].r<=lq) return {0,n};
+    if(s[no].val<=x) return {0,n};
+    if(s[no].l+1==s[no].r) return {1,s[no].l};
+    pass(no);
+    pair<bool,int> ans = get_bigger_left(lq,rq,x,2*no);
+    if(ans.fi) return ans;
+    ans = get_bigger_left(lq,rq,x,2*no+1);
+    if(ans.fi) return ans;
+    return {0,n};
+}
+*/
 };
 
 //Seg soma solves: https://www.spoj.com/problems/HORRIBLE/
@@ -104,7 +137,7 @@ int main(){
 	int t; cin >> t;
 	fr(tt,t){
 		int n, q; cin >> n >> q;
-		Seg seg((vector<ll>(n)));
+		Seg seg((vector<ll>(n))); //Para construir assim, necessario usar dois parenteses (?)
 		fr(qq,q){
 			int tipo; cin >> tipo;
 			if(tipo==0){
