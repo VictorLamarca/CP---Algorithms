@@ -2,13 +2,10 @@
 using namespace std;
 
 #define fr(i,n) for(int i = 0; i<n; i++)
-#define sz(a) (int)(a.size())
-#define prin(a) cout << #a << " = " << a << endl
-#define all(v) (v).begin(),(v).end()
-
 typedef long long ll;
+#define rmin(a,b) a = min<ll>(a,b)
 
-//solves https://codeforces.com/contest/982/problem/E
+//solves https://atcoder.jp/contests/abc193/tasks/abc193_e
 
 ll div(ll a, ll b, bool ceil){
 	ll ans = abs(a/b);
@@ -54,46 +51,34 @@ ll qual_sol(ll a, ll b, ll c){
 	return xo+k*b;
 }
 
-ll n, m, x, y, vx, vy;
-void no(){
-	puts("-1");
-	exit(0);
+/*
+	Return minimun r such that:
+		r = ra (mod a)
+		r = rb (mod b)
+	Or -1 if no such r
+*/
+ll solve_crt(ll ra, ll a, ll rb, ll b){
+	ll minx = qual_sol(a,-b,rb-ra);
+	if(minx==-1) return minx;
+	return a*minx+ra;
 }
 
 int main(){
-	cin >> n >> m >> x >> y >> vx >> vy;
-	
-	if(vx==0){
-		if(x!=0 and x!=n) no();
-		if(vy<0) y = 0;
-		else y = m;
-		cout << x << " " << y << endl;
-		return 0;
-	} 
-	if(vy==0){
-		if(y!=0 and y!=m) no();
-		if(vx<0) x = 0;
-		else x = n;
-		cout << x << " " << y << endl;
-		return 0;
-	} 
-	
-	ll rn = x;
-	if(vx>0) rn = n-x;
-	ll rm = y;
-	if(vy>0) rm = m-y;
-	
-	ll xo = qual_sol(n,-m,rm-rn);
-	if(xo==-1) no();
-	
-	ll k = xo*n+rn;
-	ll xf = x+vx*k;
-	ll yf = y+vy*k;
-	
-	ll divx = xf/n;
-	ll divy = yf/m;
-	if(divx%2==0) n = 0;
-	if(divy%2==0) m = 0;
-	
-	cout << n << " " << m << endl;
+	ios::sync_with_stdio(0); cin.tie(0);
+	ll t; cin >> t;
+	fr(tt,t){
+		ll X, Y, P, Q; cin >> X >> Y >> P >> Q;
+		
+		ll t1 = P+Q, t2 = 2*X+2*Y;
+		ll ans = LLONG_MAX;
+		fr(i,Q) fr(j,Y){
+			ll cand = solve_crt(P+i,t1,X+j,t2);
+			if(cand!=-1) rmin(ans,cand);
+		}
+		if(ans<LLONG_MAX){
+			cout << ans << "\n";
+		} else{
+			cout << "infinity\n";
+		}
+	}
 }
