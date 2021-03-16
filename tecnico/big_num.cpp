@@ -6,6 +6,25 @@ using namespace std;
 #define prin(a) cout << #a << " = " << a << endl
 #define all(v) (v).begin(),(v).end()
 
+/*
+	Implementação de bignum
+	
+	Lembrar de:
+		Usar com inicialização de long long
+			if(ans==bignum(0ll)) do something
+		Todas as operações matematicas típicas são suportadas:
+			+ - * % /
+		Para printar soh usar
+			x.print(); //assume base 1e9, que é a padrão
+	
+	Submissão exemplo minha: https://codeforces.com/gym/102785/submission/110068694
+	Na mais desse código a sessão de testes
+	
+	Outras implementações:
+		De chines no CF: https://codeforces.com/contest/98/submission/3856625
+		Macacario ITA (contem erros): https://github.com/splucs/Competitive-Programming/blob/master/Macac%C3%A1rio/Math/bignum.cpp
+*/
+
 typedef long long ll;
 //mudar base para 1e9 para ser mais eficiente, mas deixar como 10 para testes
 const int base = round(1e9);
@@ -16,9 +35,6 @@ void fix(vector<int> &a) {
 		a.pop_back();
 	}
 }
-
-//submissao modelo sugerida no codeforces: https://codeforces.com/contest/98/submission/3856625
-// macacario ITA: https://github.com/splucs/Competitive-Programming/blob/master/Macac%C3%A1rio/Math/bignum.cpp (contem erros)
 
 struct bignum{
 
@@ -226,7 +242,6 @@ void prin_time(){
 }
 
 int main(){
-	//puts("oi");
 	if(0){
 		bignum a(171), b(39);
 		ts = clock();
