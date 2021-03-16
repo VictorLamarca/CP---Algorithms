@@ -16,6 +16,7 @@ using namespace std;
 			+ - * % /
 		Para printar soh usar
 			x.print(); //assume base 1e9, que é a padrão
+		Posso inicializar/construir com um array de char tmbm (char str[N])
 	
 	Submissão exemplo minha: https://codeforces.com/gym/102785/submission/110068694
 	Na mais desse código a sessão de testes
@@ -26,7 +27,7 @@ using namespace std;
 */
 
 typedef long long ll;
-//mudar base para 1e9 para ser mais eficiente, mas deixar como 10 para testes
+//Base 1e9 é a padrão, mais eficiente e cabe em inteiro, mas deixar base como 10 para testes
 const int base = round(1e9);
 
 //Remover Leading zeros
