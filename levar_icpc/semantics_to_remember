@@ -1,0 +1,24 @@
+Bitset:
+
+	bitset e vector<bool> ambos usam compressao de 32/64 vezes
+	 "bitset implementa funcoes de contar qnts tem setados e bitwise operators, mas posso fazer map 
+	 de vector bool pq, para ele, o comparision esta definido, bitset nao, vector bool tmbm tem tamanho "dinamico"
+	 
+	 bitset<500> reg[N]
+	 bitset<1000> a, b, c;
+	 c = a&b;
+	 a.any(), b.none(), c.all(), a[13];
+	 reg[i].flip(), reg[i].count(), reg[i].reset();
+	 
+	 map<vector<bool>,int> mp;
+	 vector<bool> vec;
+	 vec.flip();
+	 
+LARGE PRIMES (desconhecidos - bom pra hash)
+
+	cabe int
+	1.5e9+1
+	1163926061
+
+	long long
+	1e15+37

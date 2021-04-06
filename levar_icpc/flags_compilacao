@@ -1,0 +1,15 @@
+Criar arquivos chamados cr com os seguintes conteudos para compilar e rodar arquivos:
+
+Conteudo To run safe (cr):
+	g++ -std=c++17 -Wshadow -fsanitize=address -D_GLIBCXX_DEBUG -W -Wall -Wextra $1 && ./a.out
+
+Conteudo To run fast (crf):
+	g++ -std=c++17 -O2 -w $1 && ./a.out
+	
+Lembrar de tornar executavel:
+	chmod +x cr
+
+Para usar fazer:
+	./cr A.cpp
+Ou:
+	./cr A.cpp < input

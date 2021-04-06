@@ -1,0 +1,12 @@
+while true;
+do
+	./a.out
+done
+
+#O script acima deve ser usado para rodar um programas varias vezes para achar algum erro. Usar da seguinte forma::
+		-PRINTAR SEED NO PROGRAMA EM Q SE BUSCA ERRO
+		-CRIAR GERADOR DE INPUT NO PROPRIO PROGRAMA
+		-FAZER CHECKER, SE DER RUIM, GERAR LOOP INFINITO
+		-USAR O SIMPLES SCRIPT ACIMA DE RODAR PROGRAMA VÁRIAS VEZES
+		
+	SE DER RUIM, ULTIMA SEED PRINTADA CAUSA O ERRO
