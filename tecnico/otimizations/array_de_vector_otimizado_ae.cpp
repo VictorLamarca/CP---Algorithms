@@ -13,10 +13,20 @@ typedef long long ll;
 template <int N> struct List{
 	int sz = 0;
 	int edge[N], prox[N], fi[N];
+	//vector<int> edge, prox, fi;
 
 	List(){
 		memset(fi,-1,sizeof(fi));
 	}
+	
+	/*
+	//versao dinamica, tirar template <int N>
+	List(int n_vert, int n_edge){
+		edge.resize(n_edge);
+		prox.resize(n_edge);
+		fi.assign(n_vert,-1);
+	}
+	*/
 
 	void ae(int u, int v){
 		edge[sz] = v;
@@ -24,6 +34,21 @@ template <int N> struct List{
 		fi[u] = sz++;
 	}
 };
+/*
+	List<N> g; == vector<int> g[N]
+	
+	Iterar nao trivial
+	for(auto &x : g[k]){
+		...
+	}	
+	
+	Analogo a:
+	
+	for(int id = g.fi[k]; id!=-1; id = g.prox[id]){
+		int x = g.edge[id];
+		...
+	}
+*/
 
 const int N = 1e6;
 const int N10 = N+10;
