@@ -1,7 +1,11 @@
+#Script chamado ri:
+------------------------------
+./cr A.cpp
 while true;
 do
 	./a.out
 done
+------------------------------
 
 #O script acima deve ser usado para rodar um programas varias vezes para achar algum erro. Usar da seguinte forma::
 		-PRINTAR SEED NO PROGRAMA EM Q SE BUSCA ERRO
@@ -10,3 +14,18 @@ done
 		-USAR O SIMPLES SCRIPT ACIMA DE RODAR PROGRAMA VÁRIAS VEZES
 		
 	SE DER RUIM, ULTIMA SEED PRINTADA CAUSA O ERRO
+	
+Gerar seed no arquivo usando mt19937 (usando time(0) como seed soh vai mudar seed a cada segundo e demorar para achar erro):
+	mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());	
+	int seed = uniform_int_distribution(0, INT_MAX)(rng);
+	prin(seed);
+	srand(seed);
+	
+	//outro uso randomico: random_shuffle(all(v),rng);
+
+Tmbm lembrar de substituir asserts de forma facil:
+	#define assert meu_assert
+	void assert(bool x){
+		if(!x) cout << "erro" << endl;
+		while(!x) continue;
+	}
