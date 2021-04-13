@@ -17,6 +17,7 @@ typedef long long ll;
 
 //solves https://atcoder.jp/contests/abc191/tasks/abc191_f
 
+//use: mymap<ll,ll> mp
 template <class key_type,class value_type> 
 struct mymap{
 	vector<key_type> keys;
