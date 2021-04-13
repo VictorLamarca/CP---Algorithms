@@ -17,13 +17,36 @@ typedef long long ll;
 
 //solves https://atcoder.jp/contests/abc191/tasks/abc191_f
 
+template <class key_type,class value_type> 
+struct mymap{
+	int n;
+	vector<key_type> keys;
+	vector<value_type> values;
+ 
+mymap(vector<key_type> _keys){
+	keys = _keys;
+	sort(all(keys));
+	keys.resize(unique(all(keys))-keys.begin());
+	n = sz(keys);
+	values = vector<value_type>(n); //valores iniciados como default (nulo)
+}
+ 
+value_type &operator[](key_type key){
+	//assert(binary_search(all(keys),key));
+	int id = lower_bound(all(keys),key)-keys.begin();
+	return values[id];
+}
+}; //end mymap
+
+/*
+//mymap without template, ll to ll
+
 struct mymap{
 int n;
 vector<ll> keys, values;
-mymap(){}
+
 mymap(vector<ll> _keys){
 	keys = _keys;
-	n = sz(keys);
 	sort(all(keys));
 	keys.resize(unique(all(keys))-keys.begin());
 	n = sz(keys);
@@ -35,7 +58,8 @@ ll &operator[](ll key){
 	int id = lower_bound(all(keys),key)-keys.begin();
 	return values[id];
 }
-};
+}; //end mymap
+*/
 
 const int N = 2e3+10;
 vector<ll> divisores[N];
@@ -59,7 +83,7 @@ int main(){
 	vector<ll> chaves;
 	fr(i,n) for(auto &d : divisores[i]) chaves.push_back(d);
 	
-	mymap mp(chaves);
+	mymap<ll,ll> mp(chaves);
 	
 	fr(i,n) for(auto &d : divisores[i]) mp[d] = gcd(mp[d],v[i]);
 	
