@@ -19,7 +19,6 @@ typedef long long ll;
 
 template <class key_type,class value_type> 
 struct mymap{
-	int n;
 	vector<key_type> keys;
 	vector<value_type> values;
  
@@ -27,8 +26,7 @@ mymap(vector<key_type> _keys){
 	keys = _keys;
 	sort(all(keys));
 	keys.resize(unique(all(keys))-keys.begin());
-	n = sz(keys);
-	values = vector<value_type>(n); //valores iniciados como default (nulo)
+	values = vector<value_type>(sz(keys)); //valores iniciados como default (nulo)
 }
  
 value_type &operator[](key_type key){
@@ -42,15 +40,13 @@ value_type &operator[](key_type key){
 //mymap without template, ll to ll
 
 struct mymap{
-int n;
 vector<ll> keys, values;
 
 mymap(vector<ll> _keys){
 	keys = _keys;
 	sort(all(keys));
 	keys.resize(unique(all(keys))-keys.begin());
-	n = sz(keys);
-	values = vector<ll>(n,0); //valores iniciados zerados
+	values = vector<ll>(sz(keys),0); //valores iniciados zerados
 }
 
 ll &operator[](ll key){
