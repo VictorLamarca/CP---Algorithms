@@ -1,20 +1,55 @@
 #Script chamado ri:
 ------------------------------
-./cr A.cpp
+echo $RANDOM > auxin 
+./cr A.cpp < auxin
 while true;
 do
-	./a.out
+	echo $RANDOM > auxin
+	./a.out < auxin
 done
 ------------------------------
 
 #O script acima deve ser usado para rodar um programas varias vezes para achar algum erro. Usar da seguinte forma::
-		-PRINTAR SEED NO PROGRAMA EM Q SE BUSCA ERRO
-		-CRIAR GERADOR DE INPUT NO PROPRIO PROGRAMA
+		-PRINTAR SEED NO PROGRAMA EM Q SE BUSCA ERRO (SEED É RECEBIDA PELA VARIÁVEL BASH $RANOM)
+		-CRIAR GERADOR DE INPUT NO PROPRIO PROGRAMA A PARTIR DA SEED
 		-FAZER CHECKER, SE DER RUIM, GERAR LOOP INFINITO
 		-USAR O SIMPLES SCRIPT ACIMA DE RODAR PROGRAMA VÁRIAS VEZES
 		
 	SE DER RUIM, ULTIMA SEED PRINTADA CAUSA O ERRO
 	
+Explicação comandos script:
+	#criando arquivo chamado auxin com um valor randomico
+	echo $RANDOM > auxin 
+	
+	#seedando o proprio RANDOM, nao necessario, mas se quiser por no inicio do script
+	RANDOM=123 
+
+No programa lembrar de
+----------------------------
+	int seed; cin >> seed;
+	prin(seed);
+	srand(seed);
+----------------------------
+
+
+Tmbm lembrar de substituir asserts de forma facil:
+
+----------------------------
+#define assert meu_assert
+void assert(bool x){
+	if(!x) cout << "erro" << endl;
+	while(!x) continue;
+}
+----------------------------
+
+
+
+
+
+
+
+-----------------------------------------------------
+Antiga forma de gerar random:
 Gerar seed no arquivo usando mt19937 (usando time(0) como seed soh vai mudar seed a cada segundo e demorar para achar erro):
 	mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());	
 	int seed = uniform_int_distribution(0, INT_MAX)(rng);
@@ -22,10 +57,3 @@ Gerar seed no arquivo usando mt19937 (usando time(0) como seed soh vai mudar see
 	srand(seed);
 	
 	//outro uso randomico: random_shuffle(all(v),rng);
-
-Tmbm lembrar de substituir asserts de forma facil:
-	#define assert meu_assert
-	void assert(bool x){
-		if(!x) cout << "erro" << endl;
-		while(!x) continue;
-	}
