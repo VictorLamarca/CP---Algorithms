@@ -2,19 +2,15 @@
 using namespace std;
 
 #define fr(i,n) for(int i = 0; i<n; i++)
-#define sz(v) (int)(v.size())
-#define prin(a) cout << #a << " = " << a << endl
-#define prinv(v) cout << #v << " = "; for(auto it : v) cout << it << ", "; cout << endl
 #define all(v) (v).begin(),(v).end()
-
-typedef long long ll;
-
 #define rmin(a,b) a = min(a,b)
 #define rmax(a,b) a = max(a,b)
 
-const int N = 1e5+10;
+typedef long long ll;
 
 //solves https://www.urionlinejudge.com.br/judge/en/problems/view/1499
+
+const int N = 1e5+10;
 
 namespace diametro_space{
 int n;
@@ -43,15 +39,25 @@ int get_most_dist(int no, ll d[]){
 	return no_max_dist;
 }
 
+vector<int> nos_diam;
+
+int no0, no1;
+
 //retorna diametro em numero de arestas! (ou seja, vertices -1)
 ll find_diametro(vector<int> _g[N], int _n, ll vd[2][N]){
 	g = _g;
 	n = _n;
 	max_dist_glob = 0;
 	
-	int no1 = get_most_dist(0,vd[0]);
-	int no0 = get_most_dist(no1,vd[1]);
+	no1 = get_most_dist(0,vd[0]);
+	no0 = get_most_dist(no1,vd[1]);
+	
+	//commentar se listar os nos no diametro nao eh necessario
 	get_most_dist(no0,vd[0]);
+	fr(i,n) 
+		if(vd[0][i]+vd[1][i]==max_dist_glob) 
+			nos_diam.push_back(i);
+	//-------------------------
 	
 	return max_dist_glob;
 }
