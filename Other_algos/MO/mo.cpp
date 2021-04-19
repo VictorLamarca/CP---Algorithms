@@ -1,132 +1,95 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define fr(i,n) for(int i=0;i<n;i++)
-
-#define eb emplace_back
-#define pb push_back
-
+#define fr(i,n) for(int i = 0; i<n; i++)
 #define all(v) (v).begin(),(v).end()
+
+typedef long long ll;
 
 #define fi first
 #define se second
-typedef pair<int,int> pii;
 
+//solves https://codeforces.com/contest/1514/problem/D
 
-//Resolve problemas do tipo qnts valores tem frequencia tal em range [l,r]
-//solves https://codeforces.com/gym/101879/problem/H
+//other Mo problem: https://codeforces.com/gym/101879/problem/H
 
-const int N = 3e4+10;
+const int N = 3e5+10;
 
-int rz;
-
-int v[N];
-
+int rz; //raiz de n - usado para ordenar querys
 int freq[N];
-int qnts_freq[220];
+int qnts_freq[N];
 
-int n,q ;
+vector<pair<int,int>> qry;
 
-vector<pii> qry;
-
+//comparador dos indices das querys do mo
 struct cmp{
     bool operator ()(int i, int j){
-        pii a = qry[i], b = qry[j];
-        if(a.se/rz!=b.se/rz) return a.se/rz < b.se/rz;
-        return a<b;
+        auto &a = qry[i], &b = qry[j];
+        if(a.fi/rz!=b.fi/rz) return a.fi/rz < b.fi/rz;
+        if(a.se!=b.se) return a.se<b.se;
+        return a<b; //bom para deixar querys iguais juntas, fica mais rapido
     }
-
 };
 
+int max_freq = 0;
 
-int ans[N];
-
-int curans = 0;
-
-void add(int id){
+void poe(int id){
+	qnts_freq[freq[id]]--;
     freq[id]++;
-    if(freq[id]>200) return;
     qnts_freq[freq[id]]++;
-    if(qnts_freq[freq[id]] == freq[id]) curans = freq[id];
+    if(freq[id]>max_freq) max_freq = freq[id];
 }
 
 void tira(int id){
-    if(freq[id]<=200){ 
-        qnts_freq[freq[id]]--;
-        if(qnts_freq[freq[id]] == freq[id]-1) curans = freq[id]-1;
-    }
+    qnts_freq[freq[id]]--;
     freq[id]--;
+    qnts_freq[freq[id]]++;
+    if(qnts_freq[max_freq]==0) max_freq--;
 }
 
 int main(){
+	ios::sync_with_stdio(0); cin.tie(0);
 	
+	int n, q;
 	cin >> n >> q;
 	
-	map<int,int> mp;
-	
-	fr(i,n) scanf("%d", v+i), mp[v[i]] = 0;
-	
-	{
-	int cnt = 0;
-	for(auto &it : mp){
-	    it.se = cnt++;
-	}
-	
-	fr(i,n){
-	    v[i] = mp[v[i]];
-	}
-	
-	}
+	vector<int> ans(q);
+	vector<int> v(n);
+	fr(i,n) cin >> v[i];
 	
 	fr(i,q){
-	    int l, r;
-	    scanf("%d%d", &l, &r);
+	    int l, r; cin >> l >> r;
 	    l--,r--;
-	    qry.eb(r,l);
+	    //[l,r] é o intervalo incluso da query
+	    qry.emplace_back(l,r);
 	}
-	
 	rz = max(1,(int)sqrt(n));
 	
-    vector<int> ito ;
-    
-    fr(i,q) ito.pb(i);
+    vector<int> ito;
+    fr(i,q) ito.push_back(i);
 	sort(all(ito),cmp());
 	
-	int curl = 0, curr = -1;
+	//nao necessario, mas bom para coordenar q tem n elementos com frequencia 0
+	qnts_freq[0] = n; 
 	
-	int l ,r;
-	
+	//curr começa negativo para o indice 0 ser ativado
+	int curl = 0, curr = -1; 
 	fr(i,q){
-	    tie(r,l) = qry[ito[i]];
-	    
-	    //fazer adds antes dos tira para nao dar negativo no meio
-	    while(curr<r){
-	        curr++;
-	        add(v[curr]);
-	    }
-	    
-	    while(curl>l){
-	        curl--;
-	        add(v[curl]);
-	    }
-	    
-	    while(curr>r){
-	        tira(v[curr]);
-	        curr--;
-	    }
-	    
-	    while(curl<l){
-	        tira(v[curl]);
-	        curl++;
-	    }
-	    
-	    ans[ito[i]] = curans;
+		int l ,r;
+	    tie(l,r) = qry[ito[i]];
+	    //fazer poes antes dos tira para nao dar negativo no meio
+	    while(curr<r) poe(v[++curr]);
+	    while(curl>l) poe(v[--curl]);
+	    while(curr>r) tira(v[curr--]);
+	    while(curl<l) tira(v[curl++]);
+	    //max_freq é a frequencia do elemento mais frequente no intervalo
+	    //curl==l and curr==r
+	    int tot = r-l+1;
+	    int rest = tot-max_freq;
+	    int resp = 1;
+	    if(rest+1<max_freq) resp+=max_freq-(rest+1);
+	    ans[ito[i]] = resp;
 	}
 	
-	fr(i,q){
-	    printf("%d\n", ans[i]);
-	}
-	
-	return 0;
+	fr(i,q) cout << ans[i] << "\n";
 }
-
