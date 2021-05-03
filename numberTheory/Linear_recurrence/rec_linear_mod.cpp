@@ -9,13 +9,9 @@ using namespace std;
 
 typedef long long ll;
 
-#define rmin(a,b) a = min<ll>(a,b)
-#define rmax(a,b) a = max<ll>(a,b)
+//solves https://www.urionlinejudge.com.br/judge/en/problems/view/2970
 
-#define fi first
-#define se second
-
-//solves https://codeforces.com/gym/102644/problem/G
+//similar submission: https://codeforces.com/gym/102644/submission/94732323
 
 template <class T>
 T fp(T x, long long e) {
@@ -47,7 +43,6 @@ vector<vector<mb>> mm(vector<vector<mb>> a, vector<vector<mb>> b){
     int l = sz(a);
 	int c = sz(b[0]);
 	assert(sz(a[0])==sz(b));
-	
 	vector<vector<mb>> ans(l,vector<mb>(c));
 	fr(i,l){
 		fr(j,c){
@@ -56,7 +51,6 @@ vector<vector<mb>> mm(vector<vector<mb>> a, vector<vector<mb>> b){
 			}
 		}
 	}
-	
 	return ans;
 }
 
@@ -72,48 +66,45 @@ vector<vector<mb>> em(vector<vector<mb>> a, ll exp){
 }
 
 int main(){
-	ios::sync_with_stdio(0); cin.tie(0);
+	//Coeficientes da recorrencia linear decrescente (em mod)
+	//f[n] = coef[0]*f[n-1] + coef[1]*f[n-2] + ...
+	vector<ll> coef = {6, 999999999, 999999999, 16, 0};
 	
-	ll n, k; cin >> n >> k;
+	//Valores iniciais originais de forma crescente
+	// f[0], f[1], f[2], ...
+	vector<ll> vo_int = {2, 24, 96, 416, 1536};
+	reverse(all(vo_int));
 	
-	vector<mb> a(n), coef(n);
-	fr(i,n) cin >> a[i].val;
-	reverse(all(a));
-	fr(i,n) cin >> coef[i].val;
-	//reverse(all(coef));
+	assert(sz(coef)==sz(vo_int));
 	
-	mb p,q,r; cin >> r.val >> q.val >> p.val;
+	vector<mb> vo;
+	for(auto &x : vo_int) vo.emplace_back(x);
 	
-	if(k<=n-1){
-		cout << a[n-1-k].val << "\n";
-	} else{
-		k-=n-1;
-		
-		vector<vector<mb>> mat(n+3,vector<mb>(n+3));
-		for(int i = 0; i<n; i++) mat[i][0] = coef[i];
-		mat[n][0] = p;
-		mat[n+1][0] = q+p*2;
-		mat[n+2][0] = r+p+q;
-		
-		fr(i,n-1) mat[i][i+1] = 1;
-		
-		mat[n][n] = 1;
-		mat[n+1][n] = 2;
-		mat[n+2][n] = 1;
-		
-		mat[n+1][n+1] = 1;
-		mat[n+2][n+1] = 1;
-		
-		mat[n+2][n+2] = 1;
-		
-		vector<mb> a_aux = a;
-		a_aux.push_back((n-1)*(n-1));
-		a_aux.push_back(n-1);
-		a_aux.push_back(1);
-		
-		vector<vector<mb>> a_mat(1,a_aux);
-		a_mat = mm(a_mat,em(mat,k));
-		
-		cout << a_mat[0][0].val << "\n";
+	vector<vector<mb>> mat(sz(vo),vector<mb>(sz(vo)));
+	fr(i,sz(vo)){
+		mat[i][0] = coef[i];
 	}
+	fr(i,sz(vo)-1) mat[i][i+1] = 1;
+	
+	/*
+	//Printar matriz
+	fr(i,sz(vo)){
+		fr(j,sz(vo)) cout << mat[i][j].val << " ";
+		cout << endl;
+	}
+	*/
+	
+	ll n;
+	cin >> n;
+	n--; //subtrair se 1-indexado em relacao ao vo
+	if(n<sz(vo)){
+		n = sz(vo)-1-n;
+		cout << vo[n].val << "\n";
+		return 0;
+	}
+	n-=sz(vo)-1;
+	vector<vector<mb>> mo;
+	mo.emplace_back(vo);
+	mo = mm(mo,em(mat,n));
+	cout << mo[0][0].val << "\n";
 }
