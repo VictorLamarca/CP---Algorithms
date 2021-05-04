@@ -6,14 +6,7 @@ using namespace std;
 #define prin(a) cout << #a << " = " << a << endl
 #define prinv(v) cout << #v << " = "; for(auto it : v) cout << it << ", "; cout << endl
 #define all(v) (v).begin(),(v).end()
-
 typedef long long ll;
-
-#define rmin(a,b) a = min<ll>(a,b)
-#define rmax(a,b) a = max<ll>(a,b)
-
-#define fi first
-#define se second
 
 //solves prob F - illuminatin
 //http://codeforces.com/gym/101201
