@@ -87,11 +87,11 @@ int get_nth(vector<int> rec, vector<int> dp, ll n){
  return ret % mod;
 }
 
+vector<int> coef; //imprimir vetor coef na main
 int guess_nth_term(vector<int> x, ll n){
  if(n < sz(x)) return x[n];
- vector<int> coef = berlekamp_massey(x);
+ coef = berlekamp_massey(x);
  if(coef.empty()) return 0;
- prinv(coef); //imprime coeficientes
  return get_nth(coef, x, n);
 }
 
@@ -148,11 +148,14 @@ ll det(int n, vector<elem> M){
 int main() {
 	//f(n) = coef[0]*f(n-1) + coef[1]*f(n-2) + ...
     
+    vector<int> va = {1,1,2,3,5,8};
     //fibonacci - n é 0-indexado
-    for(int n = 4; n<=8; n++){
-    	ll fib = guess_nth_term({1, 1, 2, 3, 5}, n);
-    	cout << "fib[" << n << "] = " << fib << endl << endl;
+    for(int n = sz(va)-2; n<=sz(va)+5; n++){
+    	assert(n>=0);
+    	ll fib = guess_nth_term(va, n);
+    	cout << "fib[" << n << "] = " << fib << endl;
     }
+    prinv(coef);
     
     //used to solve https://codeforces.com/gym/102966/problem/F
     //cout << guess_nth_term({16, 600, 4680, 19904, 61000, 152136, 329280, 642560, 1158624, 1963000, 3162456, 4887360}, 12) << endl;
