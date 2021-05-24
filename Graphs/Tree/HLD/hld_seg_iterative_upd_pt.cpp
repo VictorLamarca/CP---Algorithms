@@ -3,23 +3,19 @@ using namespace std;
 
 #define fr(i,n) for(int i = 0; i<n; i++)
 #define sz(v) (int)(v.size())
-#define prin(a) cerr << #a << " = " << a << endl
-#define prinv(v) cerr << #v << " = "; for(auto it : v) cerr << it << ", "; cerr << endl
 #define all(v) (v).begin(),(v).end()
-
 typedef long long ll;
-
-#define rmin(a,b) a = min<ll>(a,b)
 #define rmax(a,b) a = max<ll>(a,b)
 
-#define fi first
-#define se second
-
-//solves https://codeforces.com/contest/1416/problem/D
-
+/*
+	Implementação de HLD com seg iterativa
+		Seg precisa ser com template<int N>
+		
+	Essa implementação faz queries de maximo em subarvore e em caminho,
+	mas updates só um ponto (em um unico vertice)
+*/
 struct node{
 	ll val, id;
-	//lembrar de redefinir valor default (para nulo na inicializacao)
 	node(ll _val = 0, ll _id = 0) : val(_val), id(_id) {}
 };
 
@@ -42,16 +38,14 @@ void build(){
 Seg(){
 	n = N;
 	s = vector<node>(2*n);
-	build();
+	//build(); 
 }
 
-//pos 0-indexed (atualiza, nao incrementa)
 void upd(int pos, node val){
 	for(s[pos+=n]=val;pos>1;pos>>=1) 
 		s[pos>>1] = oper(s[pos],s[pos^1]);
 }
 
-//array é abstraido para 0-indexed (nas folhas da seg) e [l,r)
 node qry(int l, int r){
 	node ans;
 	for(l+=n,r+=n;l<r;l>>=1,r>>=1){
@@ -60,7 +54,6 @@ node qry(int l, int r){
 	}
 	return ans;
 }
-	
 };
 
 template<int N, bool IN_EDGES> struct HLD {
@@ -91,137 +84,95 @@ template<int N, bool IN_EDGES> struct HLD {
 	void changeNode(int v, node val){
 		tree.upd(pos[v],val);
 	}
-	ll querySubtree(int v){
+	node querySubtree(int v){
 		node ans = tree.qry(pos[v]+IN_EDGES,pos[v]+sz[v]);
-		if(ans.val){ 
-			changeNode(ans.id,node(0,ans.id));
-		}
-		return ans.val;
+		return ans;
+	}
+	template <class Op>
+	void processPath(int u, int v, Op op) {
+		for (; root[u] != root[v]; v = pai[root[v]]) {
+			if (d[root[u]] > d[root[v]]) swap(u, v);
+			op(pos[root[v]], pos[v]); }
+		if (d[u] > d[v]) swap(u, v);
+		op(pos[u]+IN_EDGES, pos[v]); 
+	}
+	node queryPath(int u, int v) { //modificacoes geralmente vem aqui (para hld soma)
+		node res; processPath(u,v,[this,&res](int l,int r) { 
+			res = oper(tree.qry(l,r+1),res); });
+		return res; 
 	}
 };
 
-//-----------------------------------------------------------
+//solves https://codeforces.com/contest/1528/problem/C
+//other submission, dsu tree: https://codeforces.com/contest/1416/submission/97959862
 
-const int N = 4e5+10;
-int tempo[N];
-
-namespace lca_space{
-int nlog;
-int n;
-vector<int> *g;
-int pai[N], dist[N]; //pai do nó i (raiz = -1)
-int st[N][20]; //sparse table - st[i][j] = pai 2^j niveis acima do nó i
-
-void dfs(int no, int from, int dac){
-	dist[no] = dac;
-	for(auto it : g[no]){
-		if(it==from) continue;
-		pai[it] = no;
-		dfs(it,no,dac+1);
-	}
-}
-
-void make(vector<int> _g[N], int _n, int root){
-	g = _g;
-	n = _n;
-
-	pai[root] = -1;
-	dfs(root,-1,0);
-	
-	nlog = 1;
-	while((1<<nlog)<n) nlog++;
-	assert(nlog<20);
-	
-	fr(i,n) fr(j,nlog+1) st[i][j] = -1;
-	fr(i,n) st[i][0] = pai[i];
-	
-	for(int j = 1; j<=nlog; j++){
-		fr(i,n){
-		    int ant_pai = st[i][j-1];
-		    if(ant_pai!=-1) st[i][j] = st[ant_pai][j-1];
-		}
-	}
-}
-
-//pega ancestor mais acima de v cujo tempo>=tt
-int get_anc(int v, int tt){
-	assert(tempo[v]>=tt);
-	for(int i = nlog; i>=0;i--){
-		if(st[v][i]!=-1 and tempo[st[v][i]]>=tt) v = st[v][i];
-	}
-	return v;
-}	
-};
+const int N = 3e5+10;
+vector<int> g1[N], g2[N];
+int vat[N];
+int lvl[N];
 
 HLD<N,false> hld;
-vector<int> g[N];
-void add_edge(int u, int v){
-	g[u].push_back(v);
-	g[v].push_back(u);
+
+int ans = 0;
+int cur = 0;
+
+void ativ(int no){
+	node fi = hld.querySubtree(no);
+	if(fi.val==0){
+		vat[no] = 1;
+		node pai = hld.queryPath(no,0);
+		if(pai.val and vat[pai.id]){
+			vat[pai.id] = 0;
+		} else{
+			cur++;
+		}
+	}
+	hld.changeNode(no,node(hld.d[no]+1,no));
 }
 
-int id_nn;
-int pai[N];
-int rep(int u){
-	return pai[u]<0? u : pai[u] = rep(pai[u]);
-}
-void merge(int u, int v, int tt){
-	u = rep(u), v = rep(v);
-	if(u!=v){
-		pai[u] = id_nn;
-		pai[v] = id_nn;
-		add_edge(id_nn,u), add_edge(id_nn,v);
-		tempo[id_nn] = tt;
-		id_nn++;
+void desativ(int no){
+	hld.changeNode(no,node(0,no));
+	if(vat[no]){
+		vat[no] = 0;
+		cur--;
+		node pai = hld.queryPath(no,0);
+		if(pai.val){
+			hld.changeNode(pai.id,node(0,pai.id));
+			ativ(pai.id);
+		}
 	}
 }
 
-int val[N];
-int idq_edge[N];
-vector<pair<int,int>> qry, edges;
+void dfs(int no){
+	ativ(no);
+	rmax(ans,cur);
+	for(auto &it : g1[no]){
+		dfs(it);
+	}
+	desativ(no);
+}
 
 int main(){
 	ios::sync_with_stdio(0); cin.tie(0);
-	int n, m, q; cin >> n >> m >> q;
-	id_nn = n;
-	fr(i,n) tempo[i] = q;
-	fr(i,N) pai[i] = -1;
-	
-	fr(i,n) cin >> val[i];
-	fr(i,m){
-		int a, b; cin >> a >> b; a--,b--;
-		edges.emplace_back(a,b);
-		idq_edge[i] = q;
-	}
-	fr(i,q){
-		int a, b; cin >> a >> b; b--;
-		if(a==2){
-			idq_edge[b] = i;
+	int t; cin >> t;
+	fr(tt,t){
+		int n; cin >> n;
+		fr(i,n) g1[i].clear(), g2[i].clear();
+		fr(i,n) vat[i] = 0;
+		fr(i,n-1){
+			int pai; cin >> pai; pai--;
+			g1[pai].push_back(i+1);
+			//g1[i+1].push_back(pai);
 		}
-		qry.emplace_back(a,b);
-	}
-	vector<tuple<int,int,int>> edge_q;
-	fr(i,m){
-		int a, b; tie(a,b) = edges[i];
-		edge_q.emplace_back(idq_edge[i],a,b);
-	}
-	sort(all(edge_q)); reverse(all(edge_q));
-	
-	for(auto &[idq,a,b] : edge_q){
-		merge(a,b,idq);
-	}
-	for(int i = 1; i<n; i++){
-		merge(0,i,-1);
-	}
-	hld.init(id_nn-1,g);
-	fr(i,n) hld.changeNode(i,node(val[i],i));
-	lca_space::make(g,id_nn,id_nn-1);
-	
-	fr(i,sz(qry)){
-		int tipo, no; tie(tipo,no) = qry[i];
-		if(tipo==1){
-			int pp = lca_space::get_anc(no,i);
-			cout << hld.querySubtree(pp) << "\n";
+		fr(i,n-1){
+			int pai; cin >> pai; pai--;
+			g2[pai].push_back(i+1);
+			g2[i+1].push_back(pai);
 		}
+		hld.init(0,g2);
+		ans = 0;
+		cur = 0;
+		dfs(0);
+		cout << ans << "\n";
 	}
 }
