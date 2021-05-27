@@ -22,16 +22,22 @@ struct Line{
 	}
 };
 
-//querys em ordem de x decrescente
-//insercoes de linhas com m (slopes) em ordem decrescente
+/*
+	Cht de maximo
+		queries em ordem de x decrescente
+		linhas inseridas com m (slope) decrescente
+		(ambos decrescente)
+		
+		para ambos crescentes substituir comentarios
+*/
 struct ChtDeque{
 	vector<Line> dq;
 	int l, r; // [l,r)
 	ChtDeque(){}
 	ChtDeque(int n){ //n eh o maximo de linhas a serem inseridas
-		n+=5;
-		dq.resize(n+5);
+		dq.resize(n);
 		l = r = n;
+		//l = r = 0; //ambos crescentes
 	}
 	ll div(ll a, ll b){
 		return a/b - ( (a^b)<0 and a%b);
@@ -46,6 +52,7 @@ struct ChtDeque{
 		Line line(m,k);
 		while(r-l>=2){
 			if(tirar(line,dq[l],dq[l+1])) l++;
+			//if(tirar(dq[r-2],dq[r-1],line)) r--;
 			else break;
 		}			
 		if(l<r and dq[l].m==m){
@@ -53,6 +60,13 @@ struct ChtDeque{
 			return;
 		}
 		dq[--l] = line;
+		/*
+		if(l<r and dq[r-1].m==m){
+			if(k>dq[r-1].k) dq[r-1] = line;
+			return;
+		}
+		dq[r++] = line;
+		*/
 	}
 	ll query(ll x){
 		assert(r>l);
@@ -61,8 +75,15 @@ struct ChtDeque{
 			else break;			
 		}
 		return dq[r-1].eval(x);
+		/*
+		while(r-l>=2){
+			if(dq[l+1].eval(x)>=dq[l].eval(x)) l++;
+			else break;			
+		}
+		return dq[l].eval(x);
+		*/
 	}
-};
+}; //end Cht
 
 const int N = 1e3+10;
 ll a[N], b[N];
