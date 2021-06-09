@@ -39,6 +39,7 @@ sparse_table(vector<ll> v){
 		}
 	}
 }
+//query fechada [l,r]
 ll qry(int l, int r){
 	assert(l<=r and l>=0 and r<n);
 	int k = log_floor(r-l+1);
