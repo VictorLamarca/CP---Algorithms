@@ -16,6 +16,11 @@ using pqt = priority_queue<T,vector<T>,greater<T>>;
 
 vector<pair<int,int>> edges_sp; //edges in shortes path
 
+/*
+	Computes the distance array, distance from source src to every node 
+	or LLONG_MAX if node not reachable
+	dest, the destination, can be specified or not to reconstruct the path to it
+*/
 void dij(int src, int n, ll *dist, int dest = -1){
 	vector<int> vis(n);
 	vector<int> ant(n,-1);	
@@ -37,8 +42,6 @@ void dij(int src, int n, ll *dist, int dest = -1){
 			}
 		}
 	}
-	
-	//erase following if not necessary:
 	//creating the path from src to dest
 	if(dest==-1 or dist[dest]==LLONG_MAX) return;
 	int cur = dest;
